@@ -388,7 +388,9 @@ public class FrontPanel extends JFrame {
         });
     }
 
-
+    public void display() {
+    	
+    }
 
 
 
