@@ -117,4 +117,235 @@ public class Instructions {
 			  registers.setCC(cc & 14);   
 		  }
 	  }
+ ///NEEDS to BE TESTED 
+	  public void AMR(String instruction, int register)
+	  {
+		  int x = StringUtil.binaryToDecimal(instruction.substring(11, 16));
+		  
+		  int result = registers.getRnByNum(register);
+		  result = result + registers.setMAR(x);
+		  registers.setRnByNum(register, result);
+		  registers.increasePCByOne();
+	  }
+	  public void SMR()
+	  {
+		  int x = StringUtil.binaryToDecimal(instruction.substring(11, 16));
+		  
+		  int result = registers.getRnByNum(register);
+		  result = result - registers.setMAR(x);
+		  registers.setRnByNum(register, result);
+		  registers.increasePCByOne();
+	  }
+	  public void AIR(String instruction, int register)
+	  {
+		  int im = StringUtil.binaryToDecimal(instruction.substring(11, 16));
+		  if(im != 0)
+		  {
+			  int regx = registers.getRnByNum(register);
+			  if(regx == 0)
+			  {
+				  registers.setRnByNum(register, (im));
+			  }
+			  else
+			  {
+				  regx = regx + im;
+				  registers.setRnByNum(register, regx);
+			  }
+		  }
+		  registers.increasePCByOne();
+	  }
+	  public void SIR(String instruciton, int register)
+	  {
+		  int im = StringUtil.binaryToDecimal(instruction.substring(11, 16));
+		  if(im != 0)
+		  {
+			  int regx = registers.getRnByNum(register);
+			  if(regx == 0)
+			  {
+				  registers.setRnByNum(register, (-im));
+			  }
+			  else
+			  {
+				  regx = regx - im;
+				  registers.setRnByNum(register, regx);
+			  }
+		  }
+		  registers.increasePCByOne();
+	  }
+	  
+	  
+	  
+	  //Using the register number the DVD function gets the number in the register and divides
+	  public void DVD(int regist1, int regist2)
+	  {
+		  int regx = registers.getRnByNum(regist1);
+		  int regy = registers.getRnByNum(regist2);
+		  if((regx == 0)||(regx == 2))&&((regy == 0)||(regy == 2))
+		  {
+		  	if(regy == 0)
+		  	{
+		  		divide by 0
+		  	}
+		  	else 
+		  	{
+		 		int result  = regx / regy;
+		  		if (result > Integer.MAX_VALUE || result < Integer.MIN_VALUE)
+		  		{
+		  			int remainder = registers.getRnByNum(regx) % registers.getRnByNum(regy);
+		  			registers.setRnByNum(regist1, result);
+		  			registers.setRnByNum((regist1+1), remainder);
+		  		}
+		  		else
+		  		{
+		  			registers.setRnByNum((regist1), result);
+		  		}
+		  	}
+		  }
+		  registers.increasePCByOne();
+	
+	  }
+	  
+	  public void MLT(int regist1, int regist2)
+	  {
+		  int regx = registers.getRnByNum(regist1);
+		  int regy = registers.getRnByNum(regist2);
+		  if((regx == 0)||(regx == 2))&&((regy == 0)||(regy == 2))
+		  {
+			  int result = regx * regy;
+			  registers.setRnByNum(regist1, result);
+		  }
+		  registers.increasePCByOne();
+	  }
+	  
+	  /*public void AND(int regist1, int regist2)
+	  {
+		  int regx = registers.getRnByNum(regist1);
+		  int regy = registers.getRnByNum(regist2);
+		  int result = regx | regy;
+		  registers.setRnByNum(regist1, result);
+		  registers.increasePCByOne();
+	  }
+   		//Tara: the not function need to limit the length of binary string.
+	  public void NOT(int regist1)
+	  {
+		  int regx = registers.getRnByNum(regist1);
+		  regx = ~regx;
+		  registers.setRnByNum(regist1, regx);
+		  registers.increasePCByOne();
+	  }
+	  public void ORR(int regist1, int regist2)
+	  {
+		  int regx = registers.getRnByNum(regist1);
+		  int regy = registers.getRnByNum(regist2);
+		  int result = regx & regy;
+		  registers.setRnByNum(regist1, result);
+		  registers.increasePCByOne();
+	  }
+	  public void TRR(int regist1, int regist2)
+	  {
+		  int regx = registers.getRnByNum(regist1);
+		  int regy = registers.getRnByNum(regist2);
+		  if(regx == regy)
+		  {
+			  registers.setCC(1);
+		  }
+		  else
+		  {
+			  registers.setCC(0);
+		  }
+		  registers.increasePCByOne();
+	  }
+	  
+	  public void dvd(int value) {
+		int rx = (value >> 7) & 3;
+		int ry = (value >> 5) & 3;
+		if (rx >=3 || ry >= 3) {
+			// TODO: throw exceptions
+			return;
+		}
+		int register1 = registers.getRnByNum(rx);
+		int register2 = registers.getRnByNum(ry);
+		if (register2 == 0){
+			int cc = registers.getCC();
+			registers.setCC(cc | 2);
+			return;
+		}
+		int quotient = register1 / register2;
+		int remainder = register1 % register2;
+		registers.setRnByNum(rx,quotient);
+		registers.setRnByNum((rx+1), remainder);
+
+	}
+
+	public void trr(int value) {
+		int rx = (value >> 7) & 3;
+		int ry = (value >> 5) & 3;
+		int register1 = registers.getRnByNum(rx);
+		int register2 = registers.getRnByNum(ry);
+		int cc = registers.getCC();
+		if (register1 == register2) {
+			registers.setCC(cc | 1);
+		} else {
+			registers.setCC((cc | 1) - 1);
+		}
+	}*/
+
+	public void dvd(int value) {
+		int rx = (value >> 7) & 3;
+		int ry = (value >> 5) & 3;
+		if (rx >=3 || ry >= 3) {
+			// TODO: throw exceptions
+			return;
+		}
+		int register1 = registers.getRnByNum(rx);
+		int register2 = registers.getRnByNum(ry);
+		if (register2 == 0){
+			int cc = registers.getCC();
+			registers.setCC(cc | 2);
+			return;
+		}
+		int quotient = register1 / register2;
+		int remainder = register1 % register2;
+		registers.setRnByNum(rx,quotient);
+		registers.setRnByNum((rx+1), remainder);
+
+	}
+
+	public void trr(int value) {
+		int rx = (value >> 7) & 3;
+		int ry = (value >> 5) & 3;
+		int register1 = registers.getRnByNum(rx);
+		int register2 = registers.getRnByNum(ry);
+		int cc = registers.getCC();
+		if (register1 == register2) {
+			registers.setCC(cc | 1);
+		} else {
+			registers.setCC((cc | 1) - 1);
+		}
+	}
+
+	public void and(int value) {
+		int rx = (value >> 7) & 3;
+		int ry = (value >> 5) & 3;
+		int register1 = registers.getRnByNum(rx);
+		int register2 = registers.getRnByNum(ry);
+
+		registers.setRnByNum(rx, register1 & register2);
+	}
+
+	public void orr(int value) {
+		int rx = (value >> 7) & 3;
+		int ry = (value >> 5) & 3;
+		int register1 = registers.getRnByNum(rx);
+		int register2 = registers.getRnByNum(ry);
+
+		registers.setRnByNum(rx, register1 | register2);
+	}
+
+	public void not(int value) {
+		int rx = (value >> 7) & 3;
+		int register1 = registers.getRnByNum(rx);
+		registers.setRnByNum(rx, (~register1) & 0xFFFF);
+	}
+	  
 }
