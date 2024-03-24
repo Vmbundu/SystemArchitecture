@@ -336,6 +336,7 @@ public class FrontPanel extends JFrame {
     private void addIPLListener(JButton IPLButton) {
         IPLButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
+		Memory.Delete();
                 registers.init();
                 System.out.println("IPL");
                 try {
