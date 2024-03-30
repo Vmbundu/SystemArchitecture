@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.function.Consumer;
 
 
@@ -59,6 +60,7 @@ public class FrontPanel extends JFrame {
     private JButton buttonLoad;
     private JButton buttonRun;
     private JButton buttonHalt;
+    private JButton buttonStep;
 
     private JPanel pnlAlu;
     private JPanel pnlOpcode;
@@ -78,6 +80,8 @@ public class FrontPanel extends JFrame {
     
     private File selected;
     private BufferedReader buffer;
+    private Memory memory = new Memory();
+    private boolean halt = false;
 
     public class Pair<T, U> {
         private T first;
@@ -113,7 +117,9 @@ public class FrontPanel extends JFrame {
         FrontPanel.setBounds(100, 100, 1300, 1200);
         FrontPanel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         FrontPanel.getContentPane().setLayout(null);; // Layout to hold 2 panels
-
+        
+        this.registers = new Registers();
+        registers.init();
 
         pnlGnrRegisters = new JPanel();
         pnlGnrRegisters.setLayout(new BoxLayout(pnlGnrRegisters, BoxLayout.Y_AXIS));
@@ -165,7 +171,7 @@ public class FrontPanel extends JFrame {
         pnlPC = resultPC.getFirst();
         bntPC = resultPC.getSecond();
         //pnlMAR = createRegisterPanel("MAR", 12, false,true, this.bntMAR);
-        Pair<JPanel, JButton> resultMAR = createRegisterPanel("R0", 12, true);
+        Pair<JPanel, JButton> resultMAR = createRegisterPanel("MAR", 12, true);
         pnlMAR = resultMAR.getFirst();
         bntMAR = resultMAR.getSecond();
         //pnlMBR = createRegisterPanel("MBR", 16, false,true, this.bntMBR );
@@ -199,11 +205,13 @@ public class FrontPanel extends JFrame {
         buttonLoad = new JButton("Load");
         buttonRun = new JButton("Run");
         buttonHalt = new JButton("Halt");
+        buttonStep = new JButton("Step");
         pnlButtons.add(buttonIPL);
         pnlButtons.add(buttonStore);
         pnlButtons.add(buttonLoad);
         pnlButtons.add(buttonRun);
         pnlButtons.add(buttonHalt);
+        pnlButtons.add(buttonStep);
 
 
         pnlAlu = new JPanel();
@@ -230,27 +238,116 @@ public class FrontPanel extends JFrame {
         FrontPanel.getContentPane().add(pnlButtons);
         FrontPanel.getContentPane().add(pnlAlu);
 
-        this.registers = new Registers();
-        registers.init();
 
-        addStoreListener(pnlR0, bntR0, value -> registers.setR0(value));
-        addStoreListener(pnlR1, bntR1, value -> registers.setR1(value));
-        addStoreListener(pnlR2, bntR2, value -> registers.setR2(value));
-        addStoreListener(pnlR3, bntR3, value -> registers.setR3(value));
-        addStoreListener(pnlX1, bntX1, value -> registers.setX1(value));
-        addStoreListener(pnlX2, bntX2, value -> registers.setX2(value));
-        addStoreListener(pnlX2, bntX3, value -> registers.setX3(value));
-        addStoreListener(pnlPC, bntPC, value -> registers.setPC(value));
-        addStoreListener(pnlMAR, bntMAR, value -> registers.setMAR(value));
-        addStoreListener(pnlMBR, bntMBR, value -> registers.setMBR(value));
+        //addStoreListener(pnlR0, bntR0, value -> registers.setR0(value));
+        addStoreListener(pnlR0, bntR0, value -> registers.setR0(value),"R0");
+        addStoreListener(pnlR1, bntR1, value -> registers.setR1(value), "R1");
+        addStoreListener(pnlR2, bntR2, value -> registers.setR2(value), "R2");
+        addStoreListener(pnlR3, bntR3, value -> registers.setR3(value),"R3");
+        addStoreListener(pnlX1, bntX1, value -> registers.setX1(value),"X1");
+        addStoreListener(pnlX2, bntX2, value -> registers.setX2(value),"X2");
+        addStoreListener(pnlX3, bntX3, value -> registers.setX3(value), "X3");
+        addStoreListener(pnlPC, bntPC, value -> registers.setPC(value), "PC");
+        addStoreListener(pnlMAR, bntMAR, value -> registers.setMAR(value),"MAR");
+        addStoreListener(pnlMBR, bntMBR, value -> registers.setMBR(value), "MBR");
 
         addIPLListener(buttonIPL);
-
+        addStrListener(buttonStore);
+        addStepListener(buttonStep);
+        addLoadListener(buttonLoad);
+        
         //TODO: execute instructions here
         addExecuteListener(pnlOpcode, bntExecute);
 
     }
-
+    
+    
+    private void addTestListener(JButton testButton) {
+        testButton.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                String[]inst = {"jz", "jne", "jcc", "jma", "setcce", "dvd", "mlt", "and", "not", "orr", "trr", "jsr","rfs"};
+                String name = testButton.getName();
+                switch(name) {
+                	case "jz":
+                		break;
+                	case "jne":
+                		break;
+                	case "jcc":
+                		break;
+                	case "jma":
+                		break;
+                	case "setcce":
+                		break;
+                	case "dvd":
+                		break;
+                	case "mlt":
+                		break;
+                	case "and":
+                		break;
+                	case "not":
+                		break;
+                	case "orr":
+                		break;
+                	case "trr":
+                		break;
+                	case "jsr":
+                		break;
+                	case "rfs":
+                		break;
+                }
+                display();
+            }
+        });
+    }
+    
+    public void step() {
+  	  Instructions instruct = new Instructions(registers, memory);
+		  int pc = registers.getPC();
+		  registers.setMAR(pc);
+		  int mar = registers.getMAR();
+		  
+		  int value = memory.getMemory(mar);
+		  registers.setMBR(value);
+		  //Running an instruction based on its opcode 
+		  int opcode = value >> 10;
+		  String op = Integer.toString(opcode);
+		  opcode = Integer.parseInt(op,8);
+		  switch(opcode) {
+		  	case 0:
+		  		halt = true;
+		  	case 1:
+		  		instruct.ldr(value);
+		  		registers.increasePCByOne();
+		  		break;
+		  	case 2:
+		  		instruct.str(value);
+		  		registers.increasePCByOne();
+		  		break;
+		  	case 3:
+		  		instruct.lda(value);
+		  		registers.increasePCByOne();
+		  		break;
+		  	case 4:
+		  		instruct.ldx(value);
+		  		registers.increasePCByOne();
+		  		break;
+		  	case 5:
+		  		instruct.stx(value);
+		  		registers.increasePCByOne();
+		  		break;
+		  }
+		  display();
+	  }
+    
+    private void addStepListener(JButton testButton) {
+        testButton.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                step();
+                
+            }
+        });
+    }
+    
     private Pair<JPanel, JButton> createRegisterPanel(String registerName, int bitLen, boolean left) {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         if (left) {
@@ -263,6 +360,7 @@ public class FrontPanel extends JFrame {
         panel.add(label);
 
         // Create 16 buttons for the register bits
+        /*
         for (int i = 0; i < bitLen; i++) {
             JRadioButton button = new JRadioButton("");
             button.setPreferredSize(new Dimension(25, 20)); // Small square shape
@@ -270,7 +368,11 @@ public class FrontPanel extends JFrame {
             panel.add(button);
 
         }
-        JButton button = new JButton("Store");
+ 		*/
+ 
+        JTextField input = new JTextField("0".repeat(registers.getBitLongByName(registerName)));
+        panel.add(input);
+        JButton button = new JButton("*");
         panel.add(button);;
         return new Pair<>(panel, button);
     }
@@ -279,36 +381,53 @@ public class FrontPanel extends JFrame {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         // Label for the register
         JLabel label = new JLabel(labelName);
-        panel.add(label);
+        panel.add(label,0);
 
         // Create 16 buttons for the register bits
-        for (int i = 0; i < bitLen; i++) {
-            JRadioButton button = new JRadioButton("");
+        //for (int i = 0; i < bitLen; i++) {
+        
+        String[]inst = {"jz", "jne", "jcc", "jma", "setcce", "dvd", "mlt", "and", "not", "orr", "trr", "jsr","rfs"};
+        //Buttons available for testing instructions
+        for (int i = 0; i < 12; i++) {
+            //JRadioButton button = new JRadioButton();
+        	Button button = new Button(inst[i]);
             button.setPreferredSize(new Dimension(25, 20)); // Small square shape
             button.setBackground(Color.WHITE);
             panel.add(button);
 
         }
-
+		
+        JTextField opcode = new JTextField("            ");
+        JTextField binary = new JTextField("0000");
+        
+        panel.add(opcode,1);
+        panel.add(binary,2);
         JButton executeButton = new JButton("execute");
-        panel.add(executeButton);
+        panel.add(executeButton,3);
         return new Pair<>(panel, executeButton);
     }
 
-    private void addStoreListener(JPanel panel, JButton storeButton, Consumer<Integer> action) {
+    private void addStoreListener(JPanel panel, JButton storeButton, Consumer<Integer> action, String button) {
         storeButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 StringBuffer buffer = new StringBuffer();
+                String val = "";
+                
+                JTextField opcode = (JTextField)pnlOpcode.getComponent(2);
+                String binary = opcode.getText();
+                
                 for (Component com : panel.getComponents()) {
-                    if (com instanceof JRadioButton) {
-                        JRadioButton rdb = (JRadioButton) com;
-                        buffer = rdb.isSelected() ? buffer.append("1") : buffer.append("0");
+                    if (com instanceof JTextField) {
+                        JTextField textField = (JTextField) com;
+                        textField.setText(binary);
                     }
                 }
-                int value = NumeralConvert.BinaryToDecimal(buffer.toString());
+                //int value = NumeralConvert.BinaryToDecimal(buffer.toString());
+                //int value = NumeralConvert.BinaryToDecimal(val);
                 //textFieldX1.setText(String.valueOf(value));
-                action.accept(value); // Use the Consumer to accept the value
-                System.out.println("X1 is set to: " + buffer);
+                //action.accept(value); // Use the Consumer to accept the value
+                //System.out.println("X1 is set to: " + buffer);
+                //registers.setRegistersByName(button, value);
                 //printConsole("X1 is set to: " + value);
             }
         });
@@ -317,6 +436,7 @@ public class FrontPanel extends JFrame {
     private void addExecuteListener(JPanel panel, JButton storeButton) {
         storeButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
+            	/*
                 StringBuffer buffer = new StringBuffer();
                 for (Component com : panel.getComponents()) {
                     if (com instanceof JRadioButton) {
@@ -324,10 +444,19 @@ public class FrontPanel extends JFrame {
                         buffer = rdb.isSelected() ? buffer.append("1") : buffer.append("0");
                     }
                 }
-                int value = NumeralConvert.BinaryToDecimal(buffer.toString());
+                */
+            	JTextField opcode = (JTextField)panel.getComponent(1);
+            	JTextField binary = (JTextField)panel.getComponent(2);
+            	
+            	String op = opcode.getText();
+            	int value = Integer.parseInt(op.trim(), 8);
+            	op = Integer.toBinaryString(value);
+            	binary.setText(op);
+                //int value = NumeralConvert.BinaryToDecimal(buffer.toString());
                 //textFieldX1.setText(String.valueOf(value));
                 //action.accept(value); // Use the Consumer to accept the value
-                System.out.println("instruction value: " + buffer);
+                //System.out.println("instruction value: " + buffer);
+            	System.out.println("Opcode Set!");
                 //printConsole("X1 is set to: " + value);
             }
         });
@@ -364,6 +493,27 @@ public class FrontPanel extends JFrame {
 					System.out.println("Done");
 					return;
 				}
+				
+				str = str.trim();
+				String [] arr = str.split("\\s+");
+				int octInd = Integer.parseInt(arr[0],8);
+				int octVal = Integer.parseInt(arr[1],8);
+				
+				memory.addMemory(octInd, octVal);
+				while(str != null) {
+					//Loop through rest of the file and adding to memory
+					arr = str.split("\\s+");
+					octInd = Integer.parseInt(arr[0],8);
+					octVal = Integer.parseInt(arr[1],8);
+					memory.addMemory(octInd, octVal);
+					
+					try {
+						str = buffer.readLine();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
                 //printConsole("X1 is set to: " + value);
             }
         });
@@ -388,10 +538,69 @@ public class FrontPanel extends JFrame {
         });
     }
 
-    public void display() {
-    	
+    
+    private void addLoadListener(JButton storeButton) {
+        storeButton.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+            	
+            		for (Component com : pnlMAR.getComponents()) {
+                        if (com instanceof JTextField) {
+                            JTextField regDisplay = (JTextField) com;
+                            String binVal = regDisplay.getText().trim();
+                            
+                            int mar = Integer.parseInt(binVal, 2);
+                            registers.setRegistersByName("MAR", mar);
+                            int mbr = memory.getMemory(mar);
+                            registers.setRegistersByName("MBR", mbr);
+                            display();
+                            
+                        }
+            		}
+          }
+      });
     }
-
+    
+    private void addStrListener(JButton storeButton) {
+        storeButton.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+            	JPanel[] panels = {pnlR0, pnlR1, pnlR2, pnlR3, pnlX1, pnlX2, pnlX3, pnlMBR, pnlPC, pnlMAR};
+            	String[] regWords = {"R0","R1", "R2", "R3", "X1", "X2", "X3", "MBR", "PC", "MAR"};
+            	
+            	for(int i = 0; i < panels.length; i++) {
+            		for (Component com : panels[i].getComponents()) {
+                        if (com instanceof JTextField) {
+                            JTextField regDisplay = (JTextField) com;
+                            String binVal = regDisplay.getText().trim();
+                            int val = Integer.parseInt(binVal, 2);
+                            if(val != 0) {
+                            	int value = Integer.parseInt(binVal, 2);
+                                registers.setRegistersByName(regWords[i], value);
+                                System.out.println(regWords[i]+" Bin Value: "+binVal+" was set!");
+                            }
+                            
+                            
+                        }
+            		}
+            	}
+          }
+      });
+    }
+    public void display() {
+    	JPanel[] panels = {pnlR0, pnlR1, pnlR2, pnlR3, pnlX1, pnlX2, pnlX3, pnlMBR, pnlPC, pnlMAR};
+    	String[] regWords = {"R0","R1", "R2", "R3", "X1", "X2", "X3", "MBR", "PC", "MAR"};
+    	
+    	for(int i = 0; i < panels.length; i++) {
+    		int value = registers.getRegistersByName(regWords[i]);
+    		String binValue = Integer.toBinaryString(value);
+    		for (Component com : panels[i].getComponents()) {
+                if (com instanceof JTextField) {
+                    JTextField regDisplay = (JTextField) com;
+                    regDisplay.setText(binValue);
+                    
+                }
+    		}
+    	}
+    }
 
 
     public static void main(String[] args) {

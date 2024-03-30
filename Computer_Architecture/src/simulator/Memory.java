@@ -11,9 +11,19 @@ public class Memory {
 	
 	public void addMemory(int adr, int value) {
 		memory.put(adr,value);
+		String strADR = Integer.toString(adr);
+		
+		
+		String strVAL = Integer.toString(value);
+		
+		
+		System.out.println("MAR: "+strADR+" MBR: "+strVAL);
 	}
 	
 	public int getMemory(int adr) {
+		if(memory.get(adr) == null) {
+			return adr;
+		}
 		return memory.get(adr);
 	}
 	

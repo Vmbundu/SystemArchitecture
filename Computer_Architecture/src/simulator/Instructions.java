@@ -6,9 +6,9 @@ public class Instructions {
 	Registers registers;
 	Memory memory;
 	
-	public Instructions() {
-		registers = new Registers();
-		memory = new Memory();
+	public Instructions(Registers registers, Memory memory) {
+		this.registers = registers;
+		this.memory = memory;
 	}
 	
 	public int exactAddress(int value) {
@@ -32,9 +32,11 @@ public class Instructions {
 	 public void ldr(int value) {
 		  int r = (value >> 8) & 3;
 		  int result = exactAddress(value);
+		  result = memory.getMemory(result);
 		  
-		  registers.setRnByNum(result,r);
-		  	  
+		  registers.setRnByNum(r, result);
+		  System.out.println("Load Complete");
+		  System.out.println("Register #: "+Integer.toString(r)+" Results: "+Integer.toString(result));
 	  }
 	 
 	//Store Instruction for General Purpose Register
@@ -43,15 +45,17 @@ public class Instructions {
 		  int result = exactAddress(value);
 		  
 		  memory.addMemory(result, registers.getRnByNum(r));
-		  
+		  System.out.println("Store Complete");
 	  }
 	  
 	  public void ldx(int value) {
 		  int r = (value >> 6) & 3;
 		  int result = exactAddress(value);
+		  result = memory.getMemory(result);
 		  
-		  registers.setXnByNum(result,r);
-		  	  
+		  registers.setXnByNum(r, result);
+		  System.out.println("Loaded X Register");
+		  System.out.println("Register 2 value: "+ Integer.toString(registers.getX2()));
 	  }
 	  
 	//Store Instruction for General Purpose Register
@@ -60,7 +64,7 @@ public class Instructions {
 		  int result = exactAddress(value);
 		  
 		  memory.addMemory(result, registers.getXnByNum(r));
-		  
+		  System.out.println("Store into General");
 	  }
 	  
 	  public void lda(int value) {
@@ -68,6 +72,7 @@ public class Instructions {
 		  int adr = value & 31;
 		  
 		  registers.setXnByNum(adr,r);
+		  System.out.println("Load Direct Address");
 		  	  
 	  }
 	  
@@ -118,6 +123,7 @@ public class Instructions {
 		  }
 	  }
  ///NEEDS to BE TESTED 
+	  /*
 	  public void AMR(String instruction, int register)
 	  {
 		  int x = StringUtil.binaryToDecimal(instruction.substring(11, 16));
@@ -172,7 +178,7 @@ public class Instructions {
 		  }
 		  registers.increasePCByOne();
 	  }
-	  
+	  */
 	  
 	  
 	  //Using the register number the DVD function gets the number in the register and divides
@@ -180,11 +186,11 @@ public class Instructions {
 	  {
 		  int regx = registers.getRnByNum(regist1);
 		  int regy = registers.getRnByNum(regist2);
-		  if((regx == 0)||(regx == 2))&&((regy == 0)||(regy == 2))
+		  if((regx == 0)||(regx == 2)&&((regy == 0)||(regy == 2)))
 		  {
 		  	if(regy == 0)
 		  	{
-		  		divide by 0
+		  		//divide by 0
 		  	}
 		  	else 
 		  	{
@@ -209,7 +215,7 @@ public class Instructions {
 	  {
 		  int regx = registers.getRnByNum(regist1);
 		  int regy = registers.getRnByNum(regist2);
-		  if((regx == 0)||(regx == 2))&&((regy == 0)||(regy == 2))
+		  if((regx == 0)||(regx == 2)&&((regy == 0)||(regy == 2)))
 		  {
 			  int result = regx * regy;
 			  registers.setRnByNum(regist1, result);
@@ -217,7 +223,7 @@ public class Instructions {
 		  registers.increasePCByOne();
 	  }
 	  
-	  /*public void AND(int regist1, int regist2)
+	  public void AND(int regist1, int regist2)
 	  {
 		  int regx = registers.getRnByNum(regist1);
 		  int regy = registers.getRnByNum(regist2);
@@ -288,8 +294,8 @@ public class Instructions {
 		} else {
 			registers.setCC((cc | 1) - 1);
 		}
-	}*/
-
+	}
+	/*
 	public void dvd(int value) {
 		int rx = (value >> 7) & 3;
 		int ry = (value >> 5) & 3;
@@ -309,8 +315,8 @@ public class Instructions {
 		registers.setRnByNum(rx,quotient);
 		registers.setRnByNum((rx+1), remainder);
 
-	}
-
+	}*/
+	/*
 	public void trr(int value) {
 		int rx = (value >> 7) & 3;
 		int ry = (value >> 5) & 3;
@@ -322,7 +328,7 @@ public class Instructions {
 		} else {
 			registers.setCC((cc | 1) - 1);
 		}
-	}
+	}*/
 
 	public void and(int value) {
 		int rx = (value >> 7) & 3;
@@ -347,5 +353,66 @@ public class Instructions {
 		int register1 = registers.getRnByNum(rx);
 		registers.setRnByNum(rx, (~register1) & 0xFFFF);
 	}
+	
+	 public void jsr(int value) {
+	        int ix = (value >> 8) & 3;
+	        int address = exactAddress(value);
+
+	        // Save the return address (PC + 1) in R3
+	        registers.setR3(registers.getPC() + 1);
+
+	        // Set the Program Counter (PC) to the effective address
+	        registers.setPC(address);
+	    }
+	    public void rfs(int value) {
+	        int immed = (value >> 11) & 31; // Extract the immediate value from the instruction
+
+	        // Set R0 to the immediate value
+	        registers.setR0(immed);
+
+	        // Set PC to the value stored in R3
+	        registers.setPC(registers.getR3());
+	    }
+	    /*
+	    public void sob(int value) {
+	        int r = (value >> 6) & 3;
+	        int ix = (value >> 8) & 3;
+	        int i = (value >> 10) & 1;
+	        int address = (value >> 11) & 31;
+
+	        int effectiveAddress = EffectiveAddress.calculateEA(ix, address, i, memory, registers);
+
+	        // Decrement register value
+	        int currRegValue = registers.getRnByNum(r);
+	        registers.setRnByNum(r, currRegValue - 1);
+
+	        // Check if the decremented value is greater than 0
+	        if (currRegValue > 0) {
+	            // Jump to effective address
+	            registers.setPC(effectiveAddress);
+	        } else {
+	            // Continue to the next instruction
+	            registers.increasePCByOne();
+	        }
+
+	    }
+	    
+	    public void jge(int value) {
+	        int r = (value >> 6) & 3;
+	        int ix = (value >> 8) & 3;
+	        int i = (value >> 10) & 1;
+	        int address = (value >> 11) & 31;
+
+	        int effectiveAddress = EffectiveAddress.calculateEA(ix, address, i, memory, registers);
+
+	        // Check if the value in the specified register is greater than or equal to 0
+	        if (registers.getRnByNum(r) >= 0) {
+	            // Jump to the effective address
+	            registers.setPC(effectiveAddress);
+	        } else {
+	            // Continue to the next instruction
+	            registers.increasePCByOne();
+	        }
+	    }*/
 	  
 }

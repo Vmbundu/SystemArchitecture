@@ -365,6 +365,39 @@ public class Registers {
             return this.r3;
         return 0;
     }
+    
+    public void setRegistersByName(String name, int value) {
+        if (name.equals("PC"))
+            this.pc = value;
+        if (name.equals("CC"))
+            this.cc = value;
+        if (name.equals("IR"))
+            this.ir = value;
+        if (name.equals("MAR"))
+            this.mar = value;
+        if (name.equals("MBR"))
+            this.mbr = value;
+        if (name.equals("MFR"))
+            this.mfr = value;
+        if (name.equals("MSR"))
+            this.msr = value;
+        if (name.equals("X1"))
+            this.x1 = value;
+        if (name.equals("X2"))
+            this.x2 = value;
+        if (name.equals("X3"))
+            this.x3 = value;
+        if (name.equals("R0"))
+            this.r0 = value;
+        if (name.equals("R1"))
+            this.r1 = value;
+        if (name.equals("R2"))
+            this.r2 = value;
+        if (name.equals("R3"))
+            this.r3 = value;
+        return;
+    }
+
 
     public int getBitLongByName(String name) {
         if (name.equals("PC"))
