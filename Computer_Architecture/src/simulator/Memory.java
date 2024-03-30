@@ -30,4 +30,13 @@ public class Memory {
 	public HashMap<Integer, Integer> getMemory(){
 		return memory;
 	}
+	
+	public void Delete(){
+		if(memory == null)
+		{
+			System.out.println("Memory was no initialized");
+		}
+		memory.clear();
+		System.out.println("Memory is empty");
+	}
 }
