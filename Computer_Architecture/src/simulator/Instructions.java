@@ -18,7 +18,8 @@ public class Instructions {
 		int adr = value & 31;
 		
 		//will hold the correct register value 
-		int currReg = registers.getRnByNum(ix);
+		//int currReg = registers.getRnByNum(ix);
+		int currReg = registers.getXnByNum(ix);
 		
 		adr = adr + currReg;
 		

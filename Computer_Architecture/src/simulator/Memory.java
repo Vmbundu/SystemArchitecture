@@ -1,7 +1,9 @@
 package simulator;
 
 import java.util.HashMap;
+
 import simulator.Cache.CacheLine;
+//import simulator.Cache.CacheLine;
 //Store memory from the txt file
 public class Memory {
 	static HashMap<Integer, Integer> memory;
@@ -48,7 +50,7 @@ public class Memory {
 	}
 
 	public int loadFromCache(int address) {
-		for (CacheLine line : cache.getCacheLines()) { // check every block
+		for (CacheLine line : (CacheLine [])cache.getCacheLines().toArray()) { // check every block
 			if (address == line.getAddress()) {
 				return line.getData(); // this data exists in cache.
 			}

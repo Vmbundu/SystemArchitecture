@@ -34,7 +34,7 @@ public class Cache {
 
 	LinkedList<CacheLine> cacheLines;
 	public Cache() {
-		this.cacheLines = new LinkedList<CacheLine>();
+		cacheLines = new LinkedList<CacheLine>();
 	}
 
 	public void addLine(int address, int value) {
