@@ -269,6 +269,7 @@ public class FrontPanel extends JFrame {
                 String name = testButton.getName();
                 switch(name) {
                 	case "jz":
+                		
                 		break;
                 	case "jne":
                 		break;
@@ -465,7 +466,7 @@ public class FrontPanel extends JFrame {
     private void addIPLListener(JButton IPLButton) {
         IPLButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-		Memory.Delete();
+            	memory.Delete();
                 registers.init();
                 System.out.println("IPL");
                 try {
