@@ -1,19 +1,18 @@
 package simulator;
 
 import simulator.util.NumeralConvert;
+import simulator.Cache;
 import javax.lang.model.type.NullType;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.function.Consumer;
 
 
@@ -82,6 +81,15 @@ public class FrontPanel extends JFrame {
     private BufferedReader buffer;
     private Memory memory = new Memory();
     private boolean halt = false;
+    private JPanel pnlPrinter;
+    private JScrollPane scrollPane1;
+    private JTextArea systemPrinter;
+    private JPanel pnlCacheConsole;
+    private JScrollPane scrollPane2;
+    private JTextArea cacheConsole;
+    private JPanel pnlInputConsole;
+    private JScrollPane scrollPane3;
+    private JTextArea inputConsole;
 
     public class Pair<T, U> {
         private T first;
@@ -123,28 +131,28 @@ public class FrontPanel extends JFrame {
 
         pnlGnrRegisters = new JPanel();
         pnlGnrRegisters.setLayout(new BoxLayout(pnlGnrRegisters, BoxLayout.Y_AXIS));
-        pnlGnrRegisters.setBounds(20, 20, 600, 400);
+        pnlGnrRegisters.setBounds(20, 20, 320, 400);
 
 
-        Pair<JPanel, JButton> resultR0 = createRegisterPanel("R0", 16, true);
+        Pair<JPanel, JButton> resultR0 = createRegisterPanel("R0", true);
         pnlR0 = resultR0.getFirst();
         bntR0 = resultR0.getSecond();
-        Pair<JPanel, JButton> resultR1 = createRegisterPanel("R1", 16, true);
+        Pair<JPanel, JButton> resultR1 = createRegisterPanel("R1", true);
         pnlR1 = resultR1.getFirst();
         bntR1 = resultR1.getSecond();
-        Pair<JPanel, JButton> resultR2 = createRegisterPanel("R2", 16, true);
+        Pair<JPanel, JButton> resultR2 = createRegisterPanel("R2", true);
         pnlR2 = resultR2.getFirst();
         bntR2 = resultR2.getSecond();
-        Pair<JPanel, JButton> resultR3 = createRegisterPanel("R3", 16, true);
+        Pair<JPanel, JButton> resultR3 = createRegisterPanel("R3", true);
         pnlR3 = resultR3.getFirst();
         bntR3 = resultR3.getSecond();
-        Pair<JPanel, JButton> resultX1 = createRegisterPanel("X1", 16, true);
+        Pair<JPanel, JButton> resultX1 = createRegisterPanel("X1", true);
         pnlX1 = resultX1.getFirst();
         bntX1 = resultX1.getSecond();
-        Pair<JPanel, JButton> resultX2 = createRegisterPanel("X2", 16, true);
+        Pair<JPanel, JButton> resultX2 = createRegisterPanel("X2", true);
         pnlX2 = resultX2.getFirst();
         bntX2 = resultX2.getSecond();
-        Pair<JPanel, JButton> resultX3 = createRegisterPanel("X3", 16, true);
+        Pair<JPanel, JButton> resultX3 = createRegisterPanel("X3", true);
         pnlX3 = resultX3.getFirst();
         bntX3 = resultX3.getSecond();
         /*
@@ -165,29 +173,29 @@ public class FrontPanel extends JFrame {
 
         pnlOthRegisters = new JPanel();
         pnlOthRegisters.setLayout(new BoxLayout(pnlOthRegisters, BoxLayout.Y_AXIS));
-        pnlOthRegisters.setBounds(625, 20, 600, 400);
+        pnlOthRegisters.setBounds(350, 20, 320, 400);
         //pnlPC = createRegisterPanel("PC", 12, false, true, this.bntPC);
-        Pair<JPanel, JButton> resultPC = createRegisterPanel("PC", 12, true);
+        Pair<JPanel, JButton> resultPC = createRegisterPanel("PC", true);
         pnlPC = resultPC.getFirst();
         bntPC = resultPC.getSecond();
         //pnlMAR = createRegisterPanel("MAR", 12, false,true, this.bntMAR);
-        Pair<JPanel, JButton> resultMAR = createRegisterPanel("MAR", 12, true);
+        Pair<JPanel, JButton> resultMAR = createRegisterPanel("MAR", true);
         pnlMAR = resultMAR.getFirst();
         bntMAR = resultMAR.getSecond();
         //pnlMBR = createRegisterPanel("MBR", 16, false,true, this.bntMBR );
-        Pair<JPanel, JButton> resultMBR = createRegisterPanel("MBR", 16, true);
+        Pair<JPanel, JButton> resultMBR = createRegisterPanel("MBR", true);
         pnlMBR = resultMBR.getFirst();
         bntMBR = resultMBR.getSecond();
         //pnlMFR = createRegisterPanel("MFR", 4, false, false, this.bntPC);
-        Pair<JPanel, JButton> resultMFR = createRegisterPanel("MFR", 4, true);
+        Pair<JPanel, JButton> resultMFR = createRegisterPanel("MFR", true);
         pnlMFR = resultMFR.getFirst();
         bntMFR = resultMFR.getSecond();
         //pnlIR = createRegisterPanel("IR", 16, false, false, this.bntPC);
-        Pair<JPanel, JButton> resultIR = createRegisterPanel("IR", 16, true);
+        Pair<JPanel, JButton> resultIR = createRegisterPanel("IR", true);
         pnlIR = resultIR.getFirst();
         //bntR0 = resultR0.getSecond();
         //pnlCC = createRegisterPanel("CC", 4, false, false, this.bntPC);
-        Pair<JPanel, JButton> resultCC = createRegisterPanel("CC", 4, true);
+        Pair<JPanel, JButton> resultCC = createRegisterPanel("CC", true);
         pnlCC = resultCC.getFirst();
         //bntR0 = resultR0.getSecond();
         pnlOthRegisters.add(pnlPC, BorderLayout.EAST);
@@ -259,6 +267,58 @@ public class FrontPanel extends JFrame {
         //TODO: execute instructions here
         addExecuteListener(pnlOpcode, bntExecute);
 
+        // Add message printer
+        pnlPrinter = new JPanel();
+        pnlPrinter.setBounds(700, 6, 254, 201);
+        pnlPrinter.setLayout(new BoxLayout(pnlPrinter, BoxLayout.Y_AXIS));
+        JLabel lblPrinter = new JLabel("System Printer");
+        pnlPrinter.add(lblPrinter);
+        scrollPane1 = new JScrollPane();
+        pnlPrinter.add(scrollPane1);
+
+        systemPrinter = new JTextArea();
+        systemPrinter.setLineWrap(true);
+        systemPrinter.setEditable(false);
+        scrollPane1.setViewportView(systemPrinter);
+
+        FrontPanel.getContentPane().add(pnlPrinter);
+
+        // Add cache console
+        pnlCacheConsole = new JPanel();
+        pnlCacheConsole.setBounds(700, 207, 254, 201);
+        pnlCacheConsole.setLayout(new BoxLayout(pnlCacheConsole, BoxLayout.Y_AXIS));
+        JLabel lblCache = new JLabel("Cache");
+        pnlCacheConsole.add(lblCache);
+        scrollPane2 = new JScrollPane();
+        pnlCacheConsole.add(scrollPane2);
+
+        cacheConsole = new JTextArea();
+        cacheConsole.setLineWrap(true);
+        cacheConsole.setEditable(false);
+        scrollPane2.setViewportView(cacheConsole);
+
+        FrontPanel.getContentPane().add(pnlCacheConsole);
+
+
+        // Add input console
+        /*pnlInputConsole = new JPanel();
+        pnlInputConsole.setBounds(700, 207, 254, 201);
+        pnlInputConsole.setLayout(new BoxLayout(pnlInputConsole, BoxLayout.Y_AXIS));
+        JLabel lblInput = new JLabel("Input Console");
+        pnlInputConsole.add(lblInput);
+        scrollPane3 = new JScrollPane();
+        pnlInputConsole.add(scrollPane3);
+
+        inputConsole = new JTextArea();
+        inputConsole.setLineWrap(true);
+        inputConsole.setEditable(false);
+        scrollPane3.setViewportView(inputConsole);
+
+
+        FrontPanel.getContentPane().add(pnlInputConsole);*/
+
+        // Refresh it per execute
+        getCacheLines();
     }
     
     
@@ -348,7 +408,7 @@ public class FrontPanel extends JFrame {
         });
     }
     
-    private Pair<JPanel, JButton> createRegisterPanel(String registerName, int bitLen, boolean left) {
+    private Pair<JPanel, JButton> createRegisterPanel(String registerName, boolean left) {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         if (left) {
             panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -357,18 +417,8 @@ public class FrontPanel extends JFrame {
 
         // Label for the register
         JLabel label = new JLabel(registerName);
+        label.setPreferredSize(new Dimension(40, label.getPreferredSize().height));
         panel.add(label);
-
-        // Create 16 buttons for the register bits
-        /*
-        for (int i = 0; i < bitLen; i++) {
-            JRadioButton button = new JRadioButton("");
-            button.setPreferredSize(new Dimension(25, 20)); // Small square shape
-            button.setBackground(Color.WHITE);
-            panel.add(button);
-
-        }
- 		*/
  
         JTextField input = new JTextField("0".repeat(registers.getBitLongByName(registerName)));
         panel.add(input);
@@ -386,7 +436,7 @@ public class FrontPanel extends JFrame {
         // Create 16 buttons for the register bits
         //for (int i = 0; i < bitLen; i++) {
         
-        String[]inst = {"jz", "jne", "jcc", "jma", "setcce", "dvd", "mlt", "and", "not", "orr", "trr", "jsr","rfs"};
+        /*String[]inst = {"jz", "jne", "jcc", "jma", "setcce", "dvd", "mlt", "and", "not", "orr", "trr", "jsr","rfs"};
         //Buttons available for testing instructions
         for (int i = 0; i < 12; i++) {
             //JRadioButton button = new JRadioButton();
@@ -395,7 +445,7 @@ public class FrontPanel extends JFrame {
             button.setBackground(Color.WHITE);
             panel.add(button);
 
-        }
+        }*/
 		
         JTextField opcode = new JTextField("            ");
         JTextField binary = new JTextField("0000");
@@ -457,7 +507,10 @@ public class FrontPanel extends JFrame {
                 //action.accept(value); // Use the Consumer to accept the value
                 //System.out.println("instruction value: " + buffer);
             	System.out.println("Opcode Set!");
+                printMessage("Opcode set!");
                 //printConsole("X1 is set to: " + value);
+                getCacheLines();
+                getCacheLines();
             }
         });
     }
@@ -468,6 +521,7 @@ public class FrontPanel extends JFrame {
 		Memory.Delete();
                 registers.init();
                 System.out.println("IPL");
+                printMessage("IPL");
                 try {
 					
 					//Code for User Selected Input txt file
@@ -484,7 +538,9 @@ public class FrontPanel extends JFrame {
 						buffer = new BufferedReader(new FileReader(selected));
 					}
 				}catch(Exception exception) {
-					System.out.print("Problem");			}
+					System.out.print("Problem");
+                    printMessage("Problem");
+                }
 				
 				String str = null;
 				try {
@@ -492,6 +548,7 @@ public class FrontPanel extends JFrame {
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					System.out.println("Done");
+                    printMessage("Done");
 					return;
 				}
 				
@@ -516,6 +573,7 @@ public class FrontPanel extends JFrame {
 					}
 				}
                 //printConsole("X1 is set to: " + value);
+                getCacheLines();
             }
         });
     }
@@ -533,7 +591,6 @@ public class FrontPanel extends JFrame {
                 int value = NumeralConvert.BinaryToDecimal(buffer.toString());
                 //textFieldX1.setText(String.valueOf(value));
                 action.accept(value); // Use the Consumer to accept the value
-                System.out.println("X1 is set to: " + buffer);
                 //printConsole("X1 is set to: " + value);
             }
         });
@@ -577,6 +634,7 @@ public class FrontPanel extends JFrame {
                             	int value = Integer.parseInt(binVal, 2);
                                 registers.setRegistersByName(regWords[i], value);
                                 System.out.println(regWords[i]+" Bin Value: "+binVal+" was set!");
+                                printMessage(regWords[i]+" Bin Value: "+binVal+" was set!");
                             }
                             
                             
@@ -603,7 +661,16 @@ public class FrontPanel extends JFrame {
     	}
     }
 
+    private void printMessage(String message){
+        systemPrinter.append(message + "\n");
+    }
 
+    private void getCacheLines(){
+        for (Cache.CacheLine line : memory.getCache().getCacheLines()) {
+            this.cacheConsole.append(line.getAddress() + " " + line.getData());
+        }
+        printMessage("Get new Cache data.");
+    }
     public static void main(String[] args) {
         FrontPanel GUI = new FrontPanel();
         SwingUtilities.invokeLater(() -> GUI.FrontPanel.setVisible(true));

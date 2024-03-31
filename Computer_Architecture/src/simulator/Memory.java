@@ -1,12 +1,15 @@
 package simulator;
 
 import java.util.HashMap;
+import simulator.Cache.CacheLine;
 //Store memory from the txt file
 public class Memory {
-	HashMap<Integer, Integer> memory; 
+	static HashMap<Integer, Integer> memory;
+	Cache cache;
 	
 	public Memory() {
 		memory = new HashMap<Integer, Integer>();
+		cache = new Cache();
 	}
 	
 	public void addMemory(int adr, int value) {
@@ -31,12 +34,32 @@ public class Memory {
 		return memory;
 	}
 	
-	public void Delete(){
+	public static void Delete(){
 		if(memory == null)
 		{
 			System.out.println("Memory was no initialized");
 		}
 		memory.clear();
 		System.out.println("Memory is empty");
+	}
+
+	public Cache getCache() {
+		return cache;
+	}
+
+	public int loadFromCache(int address) {
+		for (CacheLine line : cache.getCacheLines()) { // check every block
+			if (address == line.getAddress()) {
+				return line.getData(); // this data exists in cache.
+			}
+		}
+
+		int value = getMemory(address);
+		cache.addLine(address, value);
+		return value;
+	}
+
+	public void storeIntoCache(int address, int value) {
+		cache.addLine(address, value);
 	}
 }
