@@ -1,0 +1,9 @@
+
+LOC     6           ;BEGIN AT LOCATION 6
+Data    10          ;PUT 10 AT LOCATION 6
+Data    3           ;PUT 3 AT LOCATION 7
+LDR     3,0,10      ;R3 GETS 12
+STR 3,0,20		; store register 3 contents in location 20
+SMR 3,0,20		; clear register 3!
+AIR 3,10		; load register 3 with 10
+HLT                        ;STOP
