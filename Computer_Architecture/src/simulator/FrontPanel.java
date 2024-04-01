@@ -85,13 +85,14 @@ public class FrontPanel extends JFrame {
     private boolean halt = false;
     private JPanel pnlPrinter;
     private JScrollPane scrollPane1;
-    private JTextArea systemPrinter;
+    private JTextArea consolePrinter;
     private JPanel pnlCacheConsole;
     private JScrollPane scrollPane2;
     private JTextArea cacheConsole;
     private JPanel pnlInputConsole;
     private JScrollPane scrollPane3;
-    private JTextArea inputConsole;
+    private JTextArea consoleKeyboard;
+    private JButton keyboardReader;
 
     public class Pair<T, U> {
         private T first;
@@ -209,7 +210,7 @@ public class FrontPanel extends JFrame {
 
         pnlButtons = new JPanel();
         pnlButtons.setLayout(new BoxLayout(pnlButtons, BoxLayout.X_AXIS));
-        pnlButtons.setBounds(50, 420, 1400, 50);
+        pnlButtons.setBounds(50, 420, 600, 50);
         buttonIPL = new JButton("IPL");
         buttonStore = new JButton("Store");
         buttonLoad = new JButton("Load");
@@ -226,7 +227,7 @@ public class FrontPanel extends JFrame {
 
         pnlAlu = new JPanel();
         pnlAlu.setLayout(new BoxLayout(pnlAlu, BoxLayout.X_AXIS));
-        pnlAlu.setBounds(50, 520, 1400, 50);
+        pnlAlu.setBounds(50, 520, 600, 50);
         /*
         pnlOpcode = createOpcodePanel("Operation", 6);
         pnlGPR = createOpcodePanel("GPR", 2);
@@ -274,21 +275,21 @@ public class FrontPanel extends JFrame {
         pnlPrinter = new JPanel();
         pnlPrinter.setBounds(700, 6, 254, 201);
         pnlPrinter.setLayout(new BoxLayout(pnlPrinter, BoxLayout.Y_AXIS));
-        JLabel lblPrinter = new JLabel("System Printer");
+        JLabel lblPrinter = new JLabel("Console Printer");
         pnlPrinter.add(lblPrinter);
         scrollPane1 = new JScrollPane();
         pnlPrinter.add(scrollPane1);
 
-        systemPrinter = new JTextArea();
-        systemPrinter.setLineWrap(true);
-        systemPrinter.setEditable(false);
-        scrollPane1.setViewportView(systemPrinter);
+        consolePrinter = new JTextArea();
+        consolePrinter.setLineWrap(true);
+        consolePrinter.setEditable(false);
+        scrollPane1.setViewportView(consolePrinter);
 
         FrontPanel.getContentPane().add(pnlPrinter);
 
         // Add cache console
         pnlCacheConsole = new JPanel();
-        pnlCacheConsole.setBounds(700, 207, 254, 201);
+        pnlCacheConsole.setBounds(700, 217, 254, 201);
         pnlCacheConsole.setLayout(new BoxLayout(pnlCacheConsole, BoxLayout.Y_AXIS));
         JLabel lblCache = new JLabel("Cache");
         pnlCacheConsole.add(lblCache);
@@ -304,21 +305,28 @@ public class FrontPanel extends JFrame {
 
 
         // Add input console
-        /*pnlInputConsole = new JPanel();
-        pnlInputConsole.setBounds(700, 207, 254, 201);
+        pnlInputConsole = new JPanel();
+        pnlInputConsole.setBounds(700, 430, 254, 201);
         pnlInputConsole.setLayout(new BoxLayout(pnlInputConsole, BoxLayout.Y_AXIS));
-        JLabel lblInput = new JLabel("Input Console");
+        JLabel lblInput = new JLabel("Console Keyboard");
         pnlInputConsole.add(lblInput);
         scrollPane3 = new JScrollPane();
         pnlInputConsole.add(scrollPane3);
 
-        inputConsole = new JTextArea();
-        inputConsole.setLineWrap(true);
-        inputConsole.setEditable(false);
-        scrollPane3.setViewportView(inputConsole);
-
-
-        FrontPanel.getContentPane().add(pnlInputConsole);*/
+        consoleKeyboard = new JTextArea();
+        consoleKeyboard.setLineWrap(true);
+        consoleKeyboard.setEditable(true);
+        scrollPane3.setViewportView(consoleKeyboard);
+        keyboardReader = new JButton("Read");
+        pnlInputConsole.add(keyboardReader);
+        // TODO: Add listeners in read and execute instructions according to the content.
+        keyboardReader.addMouseListener(new MouseAdapter() {
+                                            public void mousePressed(MouseEvent e) {
+                                                memory.setKeyboardContent(consoleKeyboard.getText());
+                                                printMessage("Input: " + consoleKeyboard.getText());
+                                            }
+                                        });
+        FrontPanel.getContentPane().add(pnlInputConsole);
 
         // Refresh it per execute
         getCacheLines();
@@ -684,7 +692,7 @@ public class FrontPanel extends JFrame {
     }
 
     private void printMessage(String message){
-        systemPrinter.append(message + "\n");
+        consolePrinter.append(message + "\n");
     }
 
     private void getCacheLines(){

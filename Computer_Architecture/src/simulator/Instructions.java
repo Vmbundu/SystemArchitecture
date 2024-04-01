@@ -127,55 +127,65 @@ public class Instructions {
 	  }
  ///NEEDS to BE TESTED 
 	  /*
-	  public void AMR(String instruction, int register)
+	   public void AMR(int value)
 	  {
-		  int x = StringUtil.binaryToDecimal(instruction.substring(11, 16));
-		  
+		  int y = exactAddress(value);
+		  int x = memory.getMemory(y);
+		  int register = (value >> 8) & 3;
+		  System.out.println("Using register: " + register);
 		  int result = registers.getRnByNum(register);
-		  result = result + registers.setMAR(x);
+		  result = result + x;
 		  registers.setRnByNum(register, result);
 		  registers.increasePCByOne();
 	  }
-	  public void SMR()
+	  public void SMR(int value)
 	  {
-		  int x = StringUtil.binaryToDecimal(instruction.substring(11, 16));
-		  
+		  int y = exactAddress(value);
+		  int x = memory.getMemory(y);
+		  int register = (value >> 8) & 3;
+		  System.out.println("Using register: " + register);
 		  int result = registers.getRnByNum(register);
-		  result = result - registers.setMAR(x);
+		  result = result - x;
 		  registers.setRnByNum(register, result);
 		  registers.increasePCByOne();
 	  }
-	  public void AIR(String instruction, int register)
+	  public void AIR(int value)
 	  {
-		  int im = StringUtil.binaryToDecimal(instruction.substring(11, 16));
-		  if(im != 0)
+		  int y = exactAddress(value);
+		  int x = memory.getMemory(y);
+		  int register = (value >> 8) & 3;
+		  System.out.println("Using register: " + register);
+		  if(x != 0)
 		  {
 			  int regx = registers.getRnByNum(register);
 			  if(regx == 0)
 			  {
-				  registers.setRnByNum(register, (im));
+				  registers.setRnByNum(register, (x));
 			  }
 			  else
 			  {
-				  regx = regx + im;
+				  regx = regx + x;
 				  registers.setRnByNum(register, regx);
 			  }
 		  }
 		  registers.increasePCByOne();
 	  }
-	  public void SIR(String instruciton, int register)
+	  public void SIR(int value)
 	  {
-		  int im = StringUtil.binaryToDecimal(instruction.substring(11, 16));
-		  if(im != 0)
+		  int y = exactAddress(value);
+		  int x = memory.getMemory(y);
+		  int register = (value >> 8) & 3;
+		  System.out.println("Using register: " + register);
+		  if(x != 0)
 		  {
 			  int regx = registers.getRnByNum(register);
 			  if(regx == 0)
 			  {
-				  registers.setRnByNum(register, (-im));
+				  registers.setRnByNum(register, (-x));
 			  }
 			  else
 			  {
-				  regx = regx - im;
+				  regx = regx - x;
 				  registers.setRnByNum(register, regx);
 			  }
 		  }
