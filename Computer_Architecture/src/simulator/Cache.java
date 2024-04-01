@@ -8,10 +8,11 @@ public class Cache {
 
 	public class CacheLine {
 		int address;
-		int data;
+		int [] data;
+		//int data;
 		/*String[] blockNum = {"0","0","0","0"};
         Registers registers = new Registers();*/
-		public CacheLine(int address, int data) {
+		public CacheLine(int address, int []data) {
 			this.address = address;
 			this.data = data;
 		}
@@ -23,11 +24,12 @@ public class Cache {
 			this.address = address;
 		}
 
-		public int getData() {
+		public int[] getData() {
 			return data;
 		}
 
-		public void setData(int data) {
+		public void setData(int[] data) {
+			
 			this.data = data;
 		}
 	}
@@ -37,7 +39,7 @@ public class Cache {
 		cacheLines = new LinkedList<CacheLine>();
 	}
 
-	public void addLine(int address, int value) {
+	public void addLine(int address, int[] value) {
 		if (this.cacheLines.size() >= Const.CACHE_LINES) {
 			this.cacheLines.removeLast();
 		}

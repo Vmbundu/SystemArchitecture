@@ -2,6 +2,8 @@ package simulator;
 
 import simulator.util.NumeralConvert;
 import simulator.Cache;
+import simulator.Cache.CacheLine;
+
 import javax.lang.model.type.NullType;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -266,6 +268,7 @@ public class FrontPanel extends JFrame {
         
         //TODO: execute instructions here
         addExecuteListener(pnlOpcode, bntExecute);
+        
 
         // Add message printer
         pnlPrinter = new JPanel();
@@ -322,6 +325,23 @@ public class FrontPanel extends JFrame {
     }
     
     
+    private void printCache() {
+    	String caches = new String();
+    	LinkedList<CacheLine> cacheList = memory.getCache().getCacheLines();
+    	
+    	for (CacheLine line : cacheList) { // check every block
+			int adr = line.getAddress();
+			caches = caches + Integer.toOctalString(adr) + " ";
+			int []dataBlock = line.getData();
+			
+			for(int block: dataBlock) {
+				caches = caches + Integer.toOctalString(block) + " ";
+			}
+			caches = caches +"\n";
+		}
+    	cacheConsole.setText(caches);
+    }
+    
     private void addTestListener(JButton testButton) {
         testButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -367,7 +387,8 @@ public class FrontPanel extends JFrame {
 		  registers.setMAR(pc);
 		  int mar = registers.getMAR();
 		  
-		  int value = memory.getMemory(mar);
+		  //int value = memory.getMemory(mar);
+		  int value = memory.loadFromCache(mar);
 		  registers.setMBR(value);
 		  //Running an instruction based on its opcode 
 		  int opcode = value >> 10;
@@ -404,7 +425,7 @@ public class FrontPanel extends JFrame {
         testButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 step();
-                
+                printCache();
             }
         });
     }

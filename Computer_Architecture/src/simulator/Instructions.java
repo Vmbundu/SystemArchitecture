@@ -47,6 +47,8 @@ public class Instructions {
 		  
 		  memory.addMemory(result, registers.getRnByNum(r));
 		  System.out.println("Store Complete");
+		  System.out.println("Register #: "+Integer.toString(r)+" Results: "+Integer.toString(result));
+
 	  }
 	  
 	  public void ldx(int value) {

@@ -1,6 +1,7 @@
 package simulator;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import simulator.Cache.CacheLine;
 //import simulator.Cache.CacheLine;
@@ -50,18 +51,34 @@ public class Memory {
 	}
 
 	public int loadFromCache(int address) {
-		for (CacheLine line : (CacheLine [])cache.getCacheLines().toArray()) { // check every block
+		int block = address & 3;
+		address = address >> 3;
+		address = address << 3;
+		int []data = new int[8];
+		
+		for (CacheLine line : cache.getCacheLines()) { // check every block
 			if (address == line.getAddress()) {
-				return line.getData(); // this data exists in cache.
+				int[] blocks = line.getData(); // this data exists in cache.
+				return blocks[block];
 			}
 		}
 
 		int value = getMemory(address);
-		cache.addLine(address, value);
+		
+		for(int i = 0; i < 8; i++) {
+			data[i] = getMemory(address+i);
+		}
+		cache.addLine(address,data);
 		return value;
 	}
 
-	public void storeIntoCache(int address, int value) {
-		cache.addLine(address, value);
+	public void storeIntoCache(int address) {
+		int adr = address >> 3;
+		int []data = new int[8];
+		
+		for(int i = 0; i < 8; i++) {
+			data[i] = getMemory(adr+i);
+		}
+		cache.addLine(address, data);
 	}
 }
