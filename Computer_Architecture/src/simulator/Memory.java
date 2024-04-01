@@ -7,8 +7,8 @@ import simulator.Cache.CacheLine;
 //Store memory from the txt file
 public class Memory {
 	static HashMap<Integer, Integer> memory;
-	Cache cache;
-	
+	private Cache cache;
+	private String keyboardContent;
 	public Memory() {
 		memory = new HashMap<Integer, Integer>();
 		cache = new Cache();
@@ -63,5 +63,9 @@ public class Memory {
 
 	public void storeIntoCache(int address, int value) {
 		cache.addLine(address, value);
+	}
+
+	public void setKeyboardContent(String keyboardContent){
+		this.keyboardContent = keyboardContent;
 	}
 }
