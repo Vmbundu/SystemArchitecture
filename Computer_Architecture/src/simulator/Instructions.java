@@ -126,7 +126,6 @@ public class Instructions {
 		  }
 	  }
  ///NEEDS to BE TESTED 
-	  /*
 	   public void AMR(int value)
 	  {
 		  int y = exactAddress(value);
@@ -191,7 +190,7 @@ public class Instructions {
 		  }
 		  registers.increasePCByOne();
 	  }
-	  */
+	  
 	  
 	  
 	  //Using the register number the DVD function gets the number in the register and divides
