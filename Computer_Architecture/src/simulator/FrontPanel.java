@@ -66,18 +66,7 @@ public class FrontPanel extends JFrame {
     private JPanel pnlAlu;
     private JPanel pnlOpcode;
     private JButton bntExecute;
-    private JPanel pnlGPR;
-    private JPanel pnlIXR;
-    private JPanel pnlI;
-    private JPanel pnlAddress;
 
-    private JPanel pnlFields;
-    private JPanel pnlInputField;
-    private JTextField inputTextField;
-    private JPanel pnlOutputField;
-    private JTextField outputTextField;
-    private JPanel pnlCacheField;
-    private JTextField cacheTextField;
     
     private File selected;
     private BufferedReader buffer;
@@ -158,13 +147,7 @@ public class FrontPanel extends JFrame {
         Pair<JPanel, JButton> resultX3 = createRegisterPanel("X3", true);
         pnlX3 = resultX3.getFirst();
         bntX3 = resultX3.getSecond();
-        /*
-        pnlR1 = createRegisterPanel("R1", 16, true, true, this.bntR1);
-        pnlR2 = createRegisterPanel("R2", 16, true, true, this.bntR2);
-        pnlR3 = createRegisterPanel("R3", 16, true, true, this.bntR3);
-        pnlX1 = createRegisterPanel("X1", 16, true, true, this.bntX1);
-        pnlX2 = createRegisterPanel("X2", 16, true, true, this.bntX2);
-        pnlX3 = createRegisterPanel("X3", 16, true, true, this.bntX3);*/
+
         pnlGnrRegisters.add(pnlR0, BorderLayout.WEST);
         pnlGnrRegisters.add(pnlR1, BorderLayout.WEST);
         pnlGnrRegisters.add(pnlR2, BorderLayout.WEST);
@@ -266,8 +249,7 @@ public class FrontPanel extends JFrame {
         addStrListener(buttonStore);
         addStepListener(buttonStep);
         addLoadListener(buttonLoad);
-        
-        //TODO: execute instructions here
+
         addExecuteListener(pnlOpcode, bntExecute);
         
 
@@ -390,42 +372,63 @@ public class FrontPanel extends JFrame {
     }
     
     public void step() {
-  	  Instructions instruct = new Instructions(registers, memory);
-		  int pc = registers.getPC();
-		  registers.setMAR(pc);
-		  int mar = registers.getMAR();
+  	    Instructions instruct = new Instructions(registers, memory);
+		    int pc = registers.getPC();
+		    registers.setMAR(pc);
+		    int mar = registers.getMAR();
 		  
-		  //int value = memory.getMemory(mar);
-		  int value = memory.loadFromCache(mar);
-		  registers.setMBR(value);
-		  //Running an instruction based on its opcode 
-		  int opcode = value >> 10;
-		  String op = Integer.toString(opcode);
-		  opcode = Integer.parseInt(op,8);
-		  switch(opcode) {
-		  	case 0:
-		  		halt = true;
-		  	case 1:
-		  		instruct.ldr(value);
-		  		registers.increasePCByOne();
-		  		break;
-		  	case 2:
-		  		instruct.str(value);
-		  		registers.increasePCByOne();
-		  		break;
-		  	case 3:
-		  		instruct.lda(value);
-		  		registers.increasePCByOne();
-		  		break;
-		  	case 4:
-		  		instruct.ldx(value);
-		  		registers.increasePCByOne();
-		  		break;
-		  	case 5:
-		  		instruct.stx(value);
-		  		registers.increasePCByOne();
-		  		break;
-		  }
+		    //int value = memory.getMemory(mar);
+		    int value = memory.loadFromCache(mar);
+		    registers.setMBR(value);
+		    //Running an instruction based on its opcode
+		    int opcode = value >> 10;
+		    String op = Integer.toString(opcode);
+		    opcode = Integer.parseInt(op,8);
+		    switch(opcode) {
+                case 0:
+                    halt = true;
+                case 1:
+                    instruct.ldr(value);
+                    registers.increasePCByOne();
+                    break;
+                case 2:
+                    instruct.str(value);
+                    registers.increasePCByOne();
+                    break;
+                case 3:
+                    instruct.lda(value);
+                    registers.increasePCByOne();
+                    break;
+                case 4:
+                    instruct.ldx(value);
+                    registers.increasePCByOne();
+                    break;
+                case 5:
+                    instruct.stx(value);
+                    registers.increasePCByOne();
+                    break;
+                case 23:
+                    instruct.dvd(value);
+                    registers.increasePCByOne();
+                    break;
+                case 24:
+                    instruct.trr(value);
+                    registers.increasePCByOne();
+                    break;
+                case 25:
+                    instruct.and(value);
+                    registers.increasePCByOne();
+                    break;
+                case 26:
+                    instruct.orr(value);
+                    registers.increasePCByOne();
+                    break;
+                case 27:
+                    instruct.not(value);
+                    registers.increasePCByOne();
+                    break;
+
+            }
 		  display();
 	  }
     
@@ -516,15 +519,6 @@ public class FrontPanel extends JFrame {
     private void addExecuteListener(JPanel panel, JButton storeButton) {
         storeButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-            	/*
-                StringBuffer buffer = new StringBuffer();
-                for (Component com : panel.getComponents()) {
-                    if (com instanceof JRadioButton) {
-                        JRadioButton rdb = (JRadioButton) com;
-                        buffer = rdb.isSelected() ? buffer.append("1") : buffer.append("0");
-                    }
-                }
-                */
             	JTextField opcode = (JTextField)panel.getComponent(1);
             	JTextField binary = (JTextField)panel.getComponent(2);
             	
