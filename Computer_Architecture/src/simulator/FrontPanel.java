@@ -136,7 +136,7 @@ public class FrontPanel extends JFrame {
         pnlGnrRegisters.setLayout(new BoxLayout(pnlGnrRegisters, BoxLayout.Y_AXIS));
         pnlGnrRegisters.setBounds(20, 20, 320, 400);
 
-
+        //Produces panels and accompanying buttons for index and general purpose registers 
         Pair<JPanel, JButton> resultR0 = createRegisterPanel("R0", true);
         pnlR0 = resultR0.getFirst();
         bntR0 = resultR0.getSecond();
@@ -173,7 +173,7 @@ public class FrontPanel extends JFrame {
         pnlGnrRegisters.add(pnlX2, BorderLayout.WEST);
         pnlGnrRegisters.add(pnlX3, BorderLayout.WEST);
 
-
+        //Produces all the panels with respective buttons
         pnlOthRegisters = new JPanel();
         pnlOthRegisters.setLayout(new BoxLayout(pnlOthRegisters, BoxLayout.Y_AXIS));
         pnlOthRegisters.setBounds(350, 20, 320, 400);
@@ -332,7 +332,7 @@ public class FrontPanel extends JFrame {
         getCacheLines();
     }
     
-    
+    //Prints current cache into the cache panel
     private void printCache() {
     	String caches = new String();
     	LinkedList<CacheLine> cacheList = memory.getCache().getCacheLines();
@@ -349,7 +349,7 @@ public class FrontPanel extends JFrame {
 		}
     	cacheConsole.setText(caches);
     }
-    
+    //Method for instruction testing
     private void addTestListener(JButton testButton) {
         testButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -389,6 +389,7 @@ public class FrontPanel extends JFrame {
         });
     }
     
+    //Function for perform one step in a program
     public void step() {
   	  Instructions instruct = new Instructions(registers, memory);
 		  int pc = registers.getPC();
@@ -401,7 +402,7 @@ public class FrontPanel extends JFrame {
 		  //Running an instruction based on its opcode 
 		  int opcode = value >> 10;
 		  String op = Integer.toOctalString(opcode);
-		  //System.out.println("Address: " + Integer.toOctalString(mar) + "Value: " + Integer.toOctalString(value));
+		  System.out.println("Address: " + Integer.toOctalString(mar) + "Value: " + Integer.toOctalString(value));
 		  //System.out.println("Opcode #:" + opcode);
 		  opcode = Integer.parseInt(op);
 		  switch(opcode) {
@@ -427,10 +428,30 @@ public class FrontPanel extends JFrame {
 		  		instruct.stx(value);
 		  		registers.increasePCByOne();
 		  		break;
+		  	case 44:
+		  		instruct.setcce(value);
+		  		registers.increasePCByOne();
+		  		break;
+		  	case 6:
+		  		instruct.jz(value);
+		  		break;
+		  	case 7:
+		  		instruct.jne(value);
+		  		break;
+		  	case 10:
+		  		instruct.jcc(value);
+		  		break;
+		  	case 11:
+		  		instruct.jma(value);
+		  		break;
+		  	case 12:
+		  		instruct.jsr(value);
+		  		break;
 		  }
 		  display();
 	  }
     
+    //Listener for the step button
     private void addStepListener(JButton testButton) {
         testButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -440,6 +461,7 @@ public class FrontPanel extends JFrame {
         });
     }
     
+    //Creates the visual panels for registers
     private Pair<JPanel, JButton> createRegisterPanel(String registerName, boolean left) {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         if (left) {
@@ -458,7 +480,8 @@ public class FrontPanel extends JFrame {
         panel.add(button);;
         return new Pair<>(panel, button);
     }
-
+    
+    //Panel for the Opcode/Binary sections 
     private Pair<JPanel, JButton> createOpcodePanel(String labelName, int bitLen) {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         // Label for the register
@@ -489,6 +512,7 @@ public class FrontPanel extends JFrame {
         return new Pair<>(panel, executeButton);
     }
 
+    //Listener for the Store Button
     private void addStoreListener(JPanel panel, JButton storeButton, Consumer<Integer> action, String button) {
         storeButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -515,6 +539,7 @@ public class FrontPanel extends JFrame {
         });
     }
 
+    //Listener for the Octal Converter Button
     private void addExecuteListener(JPanel panel, JButton storeButton) {
         storeButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -547,6 +572,7 @@ public class FrontPanel extends JFrame {
         });
     }
 
+    //Listener for the IPL Button
     private void addIPLListener(JButton IPLButton) {
         IPLButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -610,6 +636,7 @@ public class FrontPanel extends JFrame {
         });
     }
 
+    /*
     private void addAluListener(JPanel panel, JButton storeButton, Consumer<Integer> action) {
         storeButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -626,9 +653,9 @@ public class FrontPanel extends JFrame {
                 //printConsole("X1 is set to: " + value);
             }
         });
-    }
+    }*/
 
-    
+    //Listener for the Load button
     private void addLoadListener(JButton storeButton) {
         storeButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -650,6 +677,7 @@ public class FrontPanel extends JFrame {
       });
     }
     
+    //Listener for the overall Store button
     private void addStrListener(JButton storeButton) {
         storeButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -676,6 +704,8 @@ public class FrontPanel extends JFrame {
           }
       });
     }
+    
+    //Method to display the results on the panels
     public void display() {
     	JPanel[] panels = {pnlR0, pnlR1, pnlR2, pnlR3, pnlX1, pnlX2, pnlX3, pnlMBR, pnlPC, pnlMAR, pnlCC, pnlMFR};
     	String[] regWords = {"R0","R1", "R2", "R3", "X1", "X2", "X3", "MBR", "PC", "MAR", "CC", "MFR"};
@@ -697,12 +727,15 @@ public class FrontPanel extends JFrame {
         consolePrinter.append(message + "\n");
     }
 
+    //Posts the results of the Cache to the Panel 
     private void getCacheLines(){
         for (Cache.CacheLine line : memory.getCache().getCacheLines()) {
             this.cacheConsole.append(line.getAddress() + " " + line.getData());
         }
         printMessage("Get new Cache data.");
     }
+    
+    //Main function where the simulator starts
     public static void main(String[] args) {
         FrontPanel GUI = new FrontPanel();
         SwingUtilities.invokeLater(() -> GUI.FrontPanel.setVisible(true));

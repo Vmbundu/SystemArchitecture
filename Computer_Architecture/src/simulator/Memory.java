@@ -14,7 +14,7 @@ public class Memory {
 		memory = new HashMap<Integer, Integer>();
 		cache = new Cache();
 	}
-	
+	//Add data or instructions into memory
 	public void addMemory(int adr, int value) {
 		memory.put(adr,value);
 		String strADR = Integer.toString(adr);
@@ -23,9 +23,10 @@ public class Memory {
 		String strVAL = Integer.toString(value);
 		
 		
-		System.out.println("MAR: "+strADR+" MBR: "+strVAL);
+		//System.out.println("MAR: "+strADR+" MBR: "+strVAL);
 	}
 	
+	//Get data/instructions from memory
 	public int getMemory(int adr) {
 		if(memory.get(adr) == null) {
 			return adr;
@@ -33,10 +34,12 @@ public class Memory {
 		return memory.get(adr);
 	}
 	
+	//Return the entire memory 
 	public HashMap<Integer, Integer> getMemory(){
 		return memory;
 	}
 	
+	//Clears memory
 	public static void Delete(){
 		if(memory == null)
 		{
@@ -46,10 +49,13 @@ public class Memory {
 		System.out.println("Memory is empty");
 	}
 
+	//Returns the entire cache
 	public Cache getCache() {
 		return cache;
 	}
 
+	//Get instructions/data from the cache. If not there, get from memory
+	//and add to cache
 	public int loadFromCache(int address) {
 		int block = address & 3;
 		address = address  & ~3;
@@ -71,6 +77,7 @@ public class Memory {
 		return value;
 	}
 
+	//Store data/instructions into cache 
 	public void storeIntoCache(int address) {
 		int adr = address >> 3;
 		int []data = new int[8];

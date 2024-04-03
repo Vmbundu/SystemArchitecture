@@ -89,9 +89,9 @@ public class Instructions {
 		  int result = exactAddress(value);
 		  
 		  if(registers.getCCElementByBit(0) == true) {
-			  registers.increasePCByOne();
+			  registers.setPC(result);
 		  }else {
-			  registers.setCC(result);
+			  registers.increasePCByOne();
 		  }
 	  }
 	 
@@ -99,9 +99,9 @@ public class Instructions {
 		  int result = exactAddress(value);
 		  
 		  if(registers.getCCElementByBit(0) == true) {
-			  registers.setCC(result);
-		  }else {
 			  registers.increasePCByOne();
+		  }else {
+			  registers.setPC(result);
 		  }
 	  }
 	  
@@ -119,6 +119,7 @@ public class Instructions {
 	  public void jma(int value) {
 		  int result = exactAddress(value);
 		  registers.setPC(result);
+		  System.out.println("JMA");
 	  }
 	  public void setcce(int value) {
 		  int r = (value >> 8) & 3;
@@ -130,6 +131,7 @@ public class Instructions {
 		  }else {
 			  registers.setCC(cc & 14);   
 		  }
+		  System.out.println("SetCCE");
 	  }
  ///NEEDS to BE TESTED 
 	  /*
