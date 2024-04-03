@@ -31,7 +31,8 @@ public class Assembler {
 
         String indexstr = Integer.toOctalString(index);
         int indexZero = 6 - indexstr.length();
-        String result = "0".repeat(indexZero)+indexstr+"      "+ "0".repeat(6)+"\n";
+        String result = "0".repeat(6)+"\n";
+        //String result = "0".repeat(indexZero)+indexstr+"      "+ "0".repeat(6)+"\n";
         return result;
     }
 
@@ -45,21 +46,21 @@ public class Assembler {
         String indexstr = Integer.toOctalString(index);
         int indexZero = 6 - indexstr.length();
         int valueZero = 6 - value.length();
-
-        String result = "0".repeat(indexZero)+indexstr+"      "+ "0".repeat(valueZero)+value+"\n";
+        String result = "0".repeat(valueZero)+value+"\n";
+        //String result = "0".repeat(indexZero)+indexstr+"      "+ "0".repeat(valueZero)+value+"\n";
         return result;
     }
 
     //Method for Halt instruction
     public static String hlt(){
         //output.write("000000 000000;%n");
-        String result = "000000      000000;\n";
+        String result = "000000;\n";
         return result;
     }
 
     //Method for data instructions with up to 4 parameters
     public static String method_one(String[] arr, int opcode){
-        System.out.println(arr[0]);
+        System.out.println("method_one: " + arr[0] + " " + arr[1]);
         String [] para = arr[1].split(",");
         int r = Integer.parseInt(para[0]);
         int ix = Integer.parseInt(para[1]);
@@ -76,16 +77,15 @@ public class Assembler {
         result = (result << 5) | adr;
 
         String value = Integer.toOctalString(result);
-        String indexstr = Integer.toOctalString(index);
 
-        int indexZero = 6 - indexstr.length();
         int valueZero = 6 - value.length();
-        String resultStr = "0".repeat(indexZero)+indexstr+"      "+ "0".repeat(valueZero)+value+"\n";
+        String resultStr = "0".repeat(valueZero)+value+"\n";
         return resultStr;
     }
 
     //Method for data instructions up to 3 parameters
     public static String method_two(String[] arr, int opcode){
+        System.out.println("method_two: " + arr[0] + " " + arr[1]);
         String [] para = arr[1].split(",");
         int ix = Integer.parseInt(para[0]);
         int adr = Integer.parseInt(para[1]);
@@ -101,29 +101,26 @@ public class Assembler {
         result = (result << 5) | adr;
 
         String value = Integer.toOctalString(result);
-        String indexstr = Integer.toOctalString(index);
 
-        int indexZero = 6 - indexstr.length();
         int valueZero = 6 - value.length();
-        String resultStr = "0".repeat(indexZero)+indexstr+"      "+ "0".repeat(valueZero)+value+"\n";
+        String resultStr = "0".repeat(valueZero)+value+"\n";
         return resultStr;
     }
 
 
     //Method for RFS instruction
     public static String rfs(String[] arr, int opcode){
+        System.out.println("rfs: " + arr[0] + " " + arr[1]);
         int imed = Integer.parseInt(arr[1]);
 
         int result = opcode;
         result = (result << 10) | imed;
 
         String value = Integer.toOctalString(result);
-        String indexstr = Integer.toOctalString(index);
 
-        int indexZero = 6 - indexstr.length();
         int valueZero = 6 - value.length();
 
-        String resultStr = "0".repeat(indexZero)+indexstr+"      "+ "0".repeat(valueZero)+value+"\n";
+        String resultStr = "0".repeat(valueZero)+value+"\n";
         return resultStr;
     }
 
@@ -136,15 +133,13 @@ public class Assembler {
         result = (result << 8);
 
         String value = Integer.toOctalString(result);
-        String indexstr = Integer.toOctalString(index);
-
-        int indexZero = 6 - indexstr.length();
         int valueZero = 6 - value.length();
-        String resultStr = "0".repeat(indexZero)+indexstr+"      "+ "0".repeat(valueZero)+value+"\n";
+        String resultStr = "0".repeat(valueZero)+value+"\n";
         return resultStr;
     }
 
     public static String operations(String[] arr, int opcode){
+        System.out.println("operations: " + arr[0] + " " + arr[1]);
         int rx = 0;
         int ry = 0;
         String [] para = arr[1].split(",");
@@ -165,6 +160,7 @@ public class Assembler {
 
     //Method for shift operations
     public static String shift(String[] arr, int opcode){
+        System.out.println("shift: " + arr[0] + " " + arr[1]);
         String [] para = arr[1].split(",");
         int r = Integer.parseInt(para[0]);
         int count = Integer.parseInt(para[1]);
@@ -188,6 +184,7 @@ public class Assembler {
 
     //Method for Memory/Register instructions
     public static String logicalInstruction(String[] arr, int opcode){
+        System.out.println("logical: " + arr[0] + " " + arr[1]);
         String [] para = arr[1].split(",");
         int r = Integer.parseInt(para[0]);
         int ix = Integer.parseInt(para[1]);
@@ -212,6 +209,7 @@ public class Assembler {
 
     //Methods for instructions with only two parameter
     public static String method_three(String[] arr, int opcode){
+        System.out.println("method_three: " + arr[0] + " " + arr[1]);
         String [] para = arr[1].split(",");
         int r = Integer.parseInt(para[0]);
         int adr = Integer.parseInt(para[1]);
@@ -226,6 +224,23 @@ public class Assembler {
         String resultStr = "0".repeat(valueZero)+value;
         return resultStr;
         //System.out.println("0".repeat(indexZero)+indexstr+"      "+ "0".repeat(valueZero)+value);
+    }
+
+    public static String io_operations(String[] arr, int opcode){
+        //Method for i/o instructions
+        String [] para = arr[1].split(",");
+        int r = Integer.parseInt(para[0]);
+        int devid = Integer.parseInt(para[1]);
+
+        int result = opcode;
+        result = (result << 2) | r;
+        result = (result << 8) | devid;
+
+        String value = Integer.toOctalString(result);
+        int valueZero = 6 - value.length();
+        String resultStr = "0".repeat(valueZero)+value+"\n";
+        return resultStr;
+
     }
 
     //Method for Trap instruction

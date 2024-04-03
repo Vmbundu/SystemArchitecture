@@ -88,11 +88,11 @@ public class Memory {
 		String str;
 		String[] lines = keyboardContent.split(System.getProperty("line.separator"));
 		for (int i = 0; i < lines.length; i++) {
-			String resultStr;
+			String resultStr = "000000";
 			String line = lines[i];
 			System.out.println(line);
 			String[] arr = line.split("\\s+");
-
+			System.out.println(arr[0] + arr[1] + " " + Const.OPCODE.get(arr[0]));
 
 			switch (arr[0]) {
 				case "LOC":
@@ -121,20 +121,12 @@ public class Memory {
 			if (Const.OPCODE.get(arr[0]) != null){
 				String op = Const.OPCODE.get(arr[0]);
 				//Load/Store instructions with at most 4 parameters
-				if(op == "06" || op == "11" || op == "12" || op == "04" || op == "05" || op == "07"){
-					Assembler.method_two(arr, Integer.parseInt(op,8));
-				} else {
+				if(op == "04" || op == "05" || op == "06" || op == "07" || op == "11" || op == "12" || op == "14" || op == "15"){
+					resultStr = Assembler.method_two(arr, Integer.parseInt(op,8));
+				} else if(op == "01" || op == "02" || op == "03" || op == "10") {
 					//Load/Store instructions with at most 3 parameters
-					Assembler.method_one(arr, Integer.parseInt(op, 8));
-				}
-
-			}
-
-			if (arr[0] != null){
-				String op = Const.OPCODE.get(arr[0]);
-
-				//Memory/Register exchange instructions
-				if(op == "16" || op == "17"){
+					resultStr = Assembler.method_one(arr, Integer.parseInt(op, 8));
+				} else if(op == "16" || op == "17"){
 					resultStr = Assembler.logicalInstruction(arr, Integer.parseInt(op,8));
 					//index = index + 1;
 					//Intermediate to Register instructions
@@ -142,16 +134,18 @@ public class Memory {
 					resultStr = Assembler.method_three(arr, Integer.parseInt(op, 8));
 					//index = index + 1;
 					//Shift operation instructions
-				}else if(op == "30" || op == "31") {
+				} else if (op == "22" || op == "23" || op == "24" || op == "25" || op == "26" || op == "27"){
+					resultStr = Assembler.operations(arr, Integer.parseInt(op, 8));
+				} else if (op == "30" || op == "31") {
 					resultStr = Assembler.shift(arr, Integer.parseInt(op, 8));
 					//index = index + 1;
 					//Register to Register operation instructions
-				} else {
-					resultStr = Assembler.operations(arr, Integer.parseInt(op, 8));
+				} else{
+					resultStr = Assembler.io_operations(arr, Integer.parseInt(op, 8));
 					//index = index + 1;
 				}
-
 			}
+			System.out.println(resultStr);
 		}
 	}
 }
