@@ -134,7 +134,6 @@ public class Instructions {
 		  System.out.println("SetCCE");
 	  }
  ///NEEDS to BE TESTED 
-	  /*
 	   public void AMR(int value)
 	  {
 		  int y = exactAddress(value);
@@ -199,7 +198,7 @@ public class Instructions {
 		  }
 		  registers.increasePCByOne();
 	  }
-	  */
+	  
 	  
 	  
 	  //Using the register number the DVD function gets the number in the register and divides
@@ -316,40 +315,7 @@ public class Instructions {
 			registers.setCC((cc | 1) - 1);
 		}
 	}
-	/*
-	public void dvd(int value) {
-		int rx = (value >> 7) & 3;
-		int ry = (value >> 5) & 3;
-		if (rx >=3 || ry >= 3) {
-			// TODO: throw exceptions
-			return;
-		}
-		int register1 = registers.getRnByNum(rx);
-		int register2 = registers.getRnByNum(ry);
-		if (register2 == 0){
-			int cc = registers.getCC();
-			registers.setCC(cc | 2);
-			return;
-		}
-		int quotient = register1 / register2;
-		int remainder = register1 % register2;
-		registers.setRnByNum(rx,quotient);
-		registers.setRnByNum((rx+1), remainder);
 
-	}*/
-	/*
-	public void trr(int value) {
-		int rx = (value >> 7) & 3;
-		int ry = (value >> 5) & 3;
-		int register1 = registers.getRnByNum(rx);
-		int register2 = registers.getRnByNum(ry);
-		int cc = registers.getCC();
-		if (register1 == register2) {
-			registers.setCC(cc | 1);
-		} else {
-			registers.setCC((cc | 1) - 1);
-		}
-	}*/
 
 	public void and(int value) {
 		int rx = (value >> 7) & 3;
