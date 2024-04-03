@@ -52,8 +52,7 @@ public class Memory {
 
 	public int loadFromCache(int address) {
 		int block = address & 3;
-		address = address >> 3;
-		address = address << 3;
+		address = address  & ~3;
 		int []data = new int[8];
 		
 		for (CacheLine line : cache.getCacheLines()) { // check every block
@@ -63,7 +62,7 @@ public class Memory {
 			}
 		}
 
-		int value = getMemory(address);
+		int value = getMemory(address + block);
 		
 		for(int i = 0; i < 8; i++) {
 			data[i] = getMemory(address+i);

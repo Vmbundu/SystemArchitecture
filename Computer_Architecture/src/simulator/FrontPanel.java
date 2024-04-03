@@ -400,8 +400,10 @@ public class FrontPanel extends JFrame {
 		  registers.setMBR(value);
 		  //Running an instruction based on its opcode 
 		  int opcode = value >> 10;
-		  String op = Integer.toString(opcode);
-		  opcode = Integer.parseInt(op,8);
+		  String op = Integer.toOctalString(opcode);
+		  //System.out.println("Address: " + Integer.toOctalString(mar) + "Value: " + Integer.toOctalString(value));
+		  //System.out.println("Opcode #:" + opcode);
+		  opcode = Integer.parseInt(op);
 		  switch(opcode) {
 		  	case 0:
 		  		halt = true;
@@ -675,8 +677,8 @@ public class FrontPanel extends JFrame {
       });
     }
     public void display() {
-    	JPanel[] panels = {pnlR0, pnlR1, pnlR2, pnlR3, pnlX1, pnlX2, pnlX3, pnlMBR, pnlPC, pnlMAR};
-    	String[] regWords = {"R0","R1", "R2", "R3", "X1", "X2", "X3", "MBR", "PC", "MAR"};
+    	JPanel[] panels = {pnlR0, pnlR1, pnlR2, pnlR3, pnlX1, pnlX2, pnlX3, pnlMBR, pnlPC, pnlMAR, pnlCC, pnlMFR};
+    	String[] regWords = {"R0","R1", "R2", "R3", "X1", "X2", "X3", "MBR", "PC", "MAR", "CC", "MFR"};
     	
     	for(int i = 0; i < panels.length; i++) {
     		int value = registers.getRegistersByName(regWords[i]);

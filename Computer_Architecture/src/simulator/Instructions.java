@@ -33,6 +33,8 @@ public class Instructions {
 	 public void ldr(int value) {
 		  int r = (value >> 8) & 3;
 		  int result = exactAddress(value);
+		  
+		  
 		  result = memory.getMemory(result);
 		  
 		  registers.setRnByNum(r, result);
@@ -45,6 +47,7 @@ public class Instructions {
 		  int r = (value >> 8) & 3;
 		  int result = exactAddress(value);
 		  
+		  
 		  memory.addMemory(result, registers.getRnByNum(r));
 		  System.out.println("Store Complete");
 		  System.out.println("Register #: "+Integer.toString(r)+" Results: "+Integer.toString(result));
@@ -52,21 +55,24 @@ public class Instructions {
 	  }
 	  
 	  public void ldx(int value) {
-		  int r = (value >> 6) & 3;
+		  int xi = (value >> 6) & 3;
 		  int result = exactAddress(value);
+		  
+		  
 		  result = memory.getMemory(result);
 		  
-		  registers.setXnByNum(r, result);
+		  registers.setXnByNum(xi, result);
 		  System.out.println("Loaded X Register");
 		  System.out.println("Register 2 value: "+ Integer.toString(registers.getX2()));
 	  }
 	  
 	//Store Instruction for General Purpose Register
 	  public void stx(int value) {
-		  int r = (value >> 6) & 3;
+		  int xi = (value >> 6) & 3;
 		  int result = exactAddress(value);
 		  
-		  memory.addMemory(result, registers.getXnByNum(r));
+		  
+		  memory.addMemory(result, registers.getXnByNum(xi));
 		  System.out.println("Store into General");
 	  }
 	  
