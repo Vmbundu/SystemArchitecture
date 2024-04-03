@@ -384,6 +384,7 @@ public class FrontPanel extends JFrame {
 		    int opcode = value >> 10;
 		    String op = Integer.toString(opcode);
 		    opcode = Integer.parseInt(op,8);
+		    System.out.println("Opcode: " + opcode);
 		    switch(opcode) {
                 case 0:
                     halt = true;
@@ -411,6 +412,26 @@ public class FrontPanel extends JFrame {
                     instruct.dvd(value);
                     registers.increasePCByOne();
                     break;
+                case 16:
+                	System.out.println("in AMR");
+                	instruct.AMR(value);
+                	registers.increasePCByOne();
+                	break;
+                case 17:
+                	System.out.println("in SMR");
+                	instruct.SMR(value);
+                	registers.increasePCByOne();
+                	break;
+                case 20:
+                	System.out.println("in AIR");
+                	instruct.AIR(value);
+                	registers.increasePCByOne();
+                	break;
+                case 21:
+                	System.out.println("in SIR");
+                	instruct.SIR(value);
+                	registers.increasePCByOne();
+                	break;
                 case 24:
                     instruct.trr(value);
                     registers.increasePCByOne();
