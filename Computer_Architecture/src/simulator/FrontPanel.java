@@ -373,7 +373,7 @@ public class FrontPanel extends JFrame {
     
     //Function for perform one step in a program
     public void step() {
-  	    Instructions instruct = new Instructions(registers, memory);
+  	    	Instructions instruct = new Instructions(registers, memory);
 		    int pc = registers.getPC();
 		    registers.setMAR(pc);
 		    int mar = registers.getMAR();
@@ -383,8 +383,8 @@ public class FrontPanel extends JFrame {
 		    registers.setMBR(value);
 		    //Running an instruction based on its opcode
 		    int opcode = value >> 10;
-		    String op = Integer.toString(opcode);
-		    opcode = Integer.parseInt(op,8);
+		    String op = Integer.toOctalString(opcode);
+		    opcode = Integer.parseInt(op);
 		    System.out.println("Opcode: " + opcode);
 		    switch(opcode) {
                 case 0:
