@@ -135,6 +135,7 @@ public class Instructions {
 	  }
 
 		  
+	  
 	   public void AMR(int value)
 	  {
 		  int y = exactAddress(value);
@@ -164,20 +165,20 @@ public class Instructions {
 	  public void AIR(int value)
 	  {
 		  int y = exactAddress(value);
-		  int x = memory.getMemory(y);
+		  //int x = memory.getMemory(y);
 		 //System.out.println("what is x: " + x);
 		  int register = (value >> 8) & 3;
 		  //System.out.println("Using register: " + register);
-		  if(x != 0)
+		  if(y != 0)
 		  {
 			  int regx = registers.getRnByNum(register);
 			  if(regx == 0)
 			  {
-				  registers.setRnByNum(register, (x));
+				  registers.setRnByNum(register, (y));
 			  }
 			  else
 			  {
-				  regx = regx + x;
+				  regx = regx + y;
 				  registers.setRnByNum(register, regx);
 			  }
 		  }
@@ -186,20 +187,20 @@ public class Instructions {
 	  public void SIR(int value)
 	  {
 		  int y = exactAddress(value);
-		  int x = memory.getMemory(y);
+		 // int x = memory.getMemory(y);
 		 // System.out.println("what is x: " + x);
 		  int register = (value >> 8) & 3;
 		  //System.out.println("Using register: " + register);
-		  if(x != 0)
+		  if(y != 0)
 		  {
 			  int regx = registers.getRnByNum(register);
 			  if(regx == 0)
 			  {
-				  registers.setRnByNum(register, (-x));
+				  registers.setRnByNum(register, (-y));
 			  }
 			  else
 			  {
-				  regx = regx - x;
+				  regx = regx - y;
 				  registers.setRnByNum(register, regx);
 			  }
 		  }
