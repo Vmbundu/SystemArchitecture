@@ -222,7 +222,7 @@ public class FrontPanel extends JFrame {
         pnlAlu.add(pnlIXR);
         pnlAlu.add(pnlI);
         pnlAlu.add(pnlAddress);*/
-        Pair<JPanel, JButton> resultAlu = createOpcodePanel("instructions", 16);
+        Pair<JPanel, JButton> resultAlu = createOpcodePanel("Octal Input", 16);
         pnlOpcode = resultAlu.getFirst();
         bntExecute = resultAlu.getSecond();
         pnlAlu.add(pnlOpcode);
@@ -442,10 +442,12 @@ public class FrontPanel extends JFrame {
                 case 17:
                 	System.out.println("in SMR");
                 	instruct.SMR(value);
+                	registers.increasePCByOne();
                 	break;
                 case 20:
                 	System.out.println("in AIR");
                 	instruct.AIR(value);
+                	registers.increasePCByOne();
                 	break;
                 case 21:
                 	System.out.println("in SIR");
@@ -523,7 +525,7 @@ public class FrontPanel extends JFrame {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         // Label for the register
         JLabel label = new JLabel(labelName);
-        panel.add(label,0);
+        panel.add(label);
 
         // Create 16 buttons for the register bits
         //for (int i = 0; i < bitLen; i++) {
@@ -540,12 +542,15 @@ public class FrontPanel extends JFrame {
         }*/
 		
         JTextField opcode = new JTextField("            ");
+        JLabel binLabel = new JLabel("Binary Output");
+       
         JTextField binary = new JTextField("0000");
         
-        panel.add(opcode,1);
-        panel.add(binary,2);
+        panel.add(opcode);
+        panel.add(binary);
+        panel.add(binLabel);
         JButton executeButton = new JButton("execute");
-        panel.add(executeButton,3);
+        panel.add(executeButton);
         return new Pair<>(panel, executeButton);
     }
 

@@ -220,7 +220,7 @@ public class Instructions {
 			  int result = registers.getRnByNum(regx) * registers.getRnByNum(regy);
 			  if(result > Integer.MAX_VALUE || result < Integer.MIN_VALUE)
 			  {
-				  registers.setCCElementByBit(Const.ConditionCode.OVERFLOW(0));
+				  //registers.setCCElementByBit(Const.ConditionCode.OVERFLOW(0));
 			  }
 			  else
 			  {
@@ -308,9 +308,9 @@ public class Instructions {
 
 	        // Set PC to the value stored in R3
 	        registers.setPC(registers.getR3());
-	    }
+	}
 
-	    public void src(int value) {
+	public void src(int value) {
 	    	int r = (value >> 8) & 3;
 			int al = (value >> 7) & 1;
 			int lr = (value >> 6) & 1;
@@ -386,6 +386,31 @@ public class Instructions {
 		}
 		if (devID == Const.DevId.CARD.getValue() || devID == Const.DevId.PRINTER.getValue()) {
 			registers.setRnByNum(r, 1);
+		}
+	}
+	
+	public void sob(int value) {
+		int r = (value >> 7) & 3;
+		int address = exactAddress(value);
+		int register = registers.getRnByNum(r);
+		register = register - 1;
+		
+		if(register > 0) {
+			registers.setPC(address);
+		}else {
+			registers.increasePCByOne();
+		}
+	}
+	
+	public void jge(int value) {
+		int r = (value >> 7) & 3;
+		int address = exactAddress(value);
+		int register = registers.getRnByNum(r);
+		
+		if(register >= 0) {
+			registers.setPC(address);
+		}else {
+			registers.increasePCByOne();
 		}
 	}
 	    /*
