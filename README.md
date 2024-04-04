@@ -32,7 +32,7 @@ Here, we will be inserting the value 5 into memory location 3.
 - Insert 5 into the “Octal Value” and Press Enter
 - Click the “MBR” button
 If your screen looks like this, you can now press “Store”. You have successfully entered data into memory!
-Loading Data From Memory
+## Loading Data From Memory
 Data must first be stored into data before it can be loaded back out. In order to load data from memory. Simply enter the memory address you want to get content from in the “Octal Value”, hit “Enter”, and then hit the “MAR” button. Finally, once the value is in the “MAR” input field, hit the “Load” button. The contents of the memory address should appear in the “MBR” input field.
 ## Inserting an Input File
  The input file should usually be the outcome of an assembler (Look at the user guide for the Assembler). When you click the IPL button, a file explorer will appear. While there, search for your input file. This program only accepts input files with the .txt extension. Once the file is open, you will see the first instruction is computed and visualized in the simulator, this is to ensure that the file has been read and loaded into data.
