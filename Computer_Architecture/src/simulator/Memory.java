@@ -89,10 +89,12 @@ public class Memory {
 		cache.addLine(address, data);
 	}
 
+	public String getKeyboardContent() {
+		return this.keyboardContent;
+	}
 	public void setKeyboardContent(String keyboardContent) {
 		this.keyboardContent = keyboardContent;
-		String str;
-		String[] lines = keyboardContent.split(System.getProperty("line.separator"));
+		/*String[] lines = keyboardContent.split(System.getProperty("line.separator"));
 		for (int i = 0; i < lines.length; i++) {
 			String resultStr = "000000";
 			String line = lines[i];
@@ -152,6 +154,6 @@ public class Memory {
 				}
 			}
 			System.out.println(resultStr);
-		}
+		}*/
 	}
 }

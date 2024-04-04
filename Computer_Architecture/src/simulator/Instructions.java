@@ -1,5 +1,7 @@
 package simulator;
 
+import simulator.util.Const;
+
 import javax.swing.JTextField;
 
 public class Instructions {
@@ -133,154 +135,101 @@ public class Instructions {
 		  }
 		  System.out.println("SetCCE");
 	  }
- ///NEEDS to BE TESTED 
+
+		  
+	  
 	   public void AMR(int value)
 	  {
 		  int y = exactAddress(value);
+		 // System.out.println("what is y: " + y);
 		  int x = memory.getMemory(y);
+		  System.out.println("what is x: " + x);
 		  int register = (value >> 8) & 3;
-		  System.out.println("Using register: " + register);
+		 // //System.out.println("Using register: " + register);
 		  int result = registers.getRnByNum(register);
 		  result = result + x;
 		  registers.setRnByNum(register, result);
-		  registers.increasePCByOne();
+		 
 	  }
 	  public void SMR(int value)
 	  {
 		  int y = exactAddress(value);
+		  //System.out.println("what is y: " + y);
 		  int x = memory.getMemory(y);
+		 // System.out.println("what is x: " + x);
 		  int register = (value >> 8) & 3;
-		  System.out.println("Using register: " + register);
+		  //System.out.println("Using register: " + register);
 		  int result = registers.getRnByNum(register);
 		  result = result - x;
 		  registers.setRnByNum(register, result);
-		  registers.increasePCByOne();
+		  
 	  }
 	  public void AIR(int value)
 	  {
 		  int y = exactAddress(value);
-		  int x = memory.getMemory(y);
+		  //int x = memory.getMemory(y);
+		 //System.out.println("what is x: " + x);
 		  int register = (value >> 8) & 3;
-		  System.out.println("Using register: " + register);
-		  if(x != 0)
+		  //System.out.println("Using register: " + register);
+		  if(y != 0)
 		  {
 			  int regx = registers.getRnByNum(register);
 			  if(regx == 0)
 			  {
-				  registers.setRnByNum(register, (x));
+				  registers.setRnByNum(register, (y));
 			  }
 			  else
 			  {
-				  regx = regx + x;
+				  regx = regx + y;
 				  registers.setRnByNum(register, regx);
 			  }
 		  }
-		  registers.increasePCByOne();
+		 
 	  }
 	  public void SIR(int value)
 	  {
 		  int y = exactAddress(value);
-		  int x = memory.getMemory(y);
+		 // int x = memory.getMemory(y);
+		 // System.out.println("what is x: " + x);
 		  int register = (value >> 8) & 3;
-		  System.out.println("Using register: " + register);
-		  if(x != 0)
+		  //System.out.println("Using register: " + register);
+		  if(y != 0)
 		  {
 			  int regx = registers.getRnByNum(register);
 			  if(regx == 0)
 			  {
-				  registers.setRnByNum(register, (-x));
+				  registers.setRnByNum(register, (-y));
 			  }
 			  else
 			  {
-				  regx = regx - x;
+				  regx = regx - y;
 				  registers.setRnByNum(register, regx);
 			  }
 		  }
-		  registers.increasePCByOne();
+		
 	  }
 	  
 	  
-	  
-	  //Using the register number the DVD function gets the number in the register and divides
-	  public void DVD(int regist1, int regist2)
+	  public void MLT(int value)
 	  {
-		  int regx = registers.getRnByNum(regist1);
-		  int regy = registers.getRnByNum(regist2);
+		  int regx = (value >> 7) & 3;
+		  int regy = (value >> 7) & 3;
+		 
 		  if((regx == 0)||(regx == 2)&&((regy == 0)||(regy == 2)))
 		  {
-		  	if(regy == 0)
-		  	{
-		  		//divide by 0
-		  	}
-		  	else 
-		  	{
-		 		int result  = regx / regy;
-		  		if (result > Integer.MAX_VALUE || result < Integer.MIN_VALUE)
-		  		{
-		  			int remainder = registers.getRnByNum(regx) % registers.getRnByNum(regy);
-		  			registers.setRnByNum(regist1, result);
-		  			registers.setRnByNum((regist1+1), remainder);
-		  		}
-		  		else
-		  		{
-		  			registers.setRnByNum((regist1), result);
-		  		}
-		  	}
+			  int result = registers.getRnByNum(regx) * registers.getRnByNum(regy);
+			  if(result > Integer.MAX_VALUE || result < Integer.MIN_VALUE)
+			  {
+				  registers.setCCElementByBit(Const.ConditionCode.OVERFLOW(0));
+			  }
+			  else
+			  {
+				  registers.setRnByNum(regx, (result >> 16));
+				  registers.setRnByNum(regx+1, (result & 0xFFF));
+			  }
 		  }
-		  registers.increasePCByOne();
-	
 	  }
 	  
-	  public void MLT(int regist1, int regist2)
-	  {
-		  int regx = registers.getRnByNum(regist1);
-		  int regy = registers.getRnByNum(regist2);
-		  if((regx == 0)||(regx == 2)&&((regy == 0)||(regy == 2)))
-		  {
-			  int result = regx * regy;
-			  registers.setRnByNum(regist1, result);
-		  }
-		  registers.increasePCByOne();
-	  }
-	  
-	  public void AND(int regist1, int regist2)
-	  {
-		  int regx = registers.getRnByNum(regist1);
-		  int regy = registers.getRnByNum(regist2);
-		  int result = regx | regy;
-		  registers.setRnByNum(regist1, result);
-		  registers.increasePCByOne();
-	  }
-   		//Tara: the not function need to limit the length of binary string.
-	  public void NOT(int regist1)
-	  {
-		  int regx = registers.getRnByNum(regist1);
-		  regx = ~regx;
-		  registers.setRnByNum(regist1, regx);
-		  registers.increasePCByOne();
-	  }
-	  public void ORR(int regist1, int regist2)
-	  {
-		  int regx = registers.getRnByNum(regist1);
-		  int regy = registers.getRnByNum(regist2);
-		  int result = regx & regy;
-		  registers.setRnByNum(regist1, result);
-		  registers.increasePCByOne();
-	  }
-	  public void TRR(int regist1, int regist2)
-	  {
-		  int regx = registers.getRnByNum(regist1);
-		  int regy = registers.getRnByNum(regist2);
-		  if(regx == regy)
-		  {
-			  registers.setCC(1);
-		  }
-		  else
-		  {
-			  registers.setCC(0);
-		  }
-		  registers.increasePCByOne();
-	  }
 	  
 	  public void dvd(int value) {
 		int rx = (value >> 7) & 3;
@@ -341,26 +290,26 @@ public class Instructions {
 		registers.setRnByNum(rx, (~register1) & 0xFFFF);
 	}
 	
-	 public void jsr(int value) {
-	        int ix = (value >> 8) & 3;
-	        int address = exactAddress(value);
+	public void jsr(int value) {
+		int ix = (value >> 8) & 3;
+		int address = exactAddress(value);
 
-	        // Save the return address (PC + 1) in R3
-	        registers.setR3(registers.getPC() + 1);
+		// Save the return address (PC + 1) in R3
+		registers.setR3(registers.getPC() + 1);
 
-	        // Set the Program Counter (PC) to the effective address
-	        registers.setPC(address);
-	    }
-	    public void rfs(int value) {
-	        int immed = (value >> 11) & 31; // Extract the immediate value from the instruction
+		// Set the Program Counter (PC) to the effective address
+		registers.setPC(address);
+	}
+	public void rfs(int value) {
+		int immed = (value >> 11) & 31; // Extract the immediate value from the instruction
 
-	        // Set R0 to the immediate value
-	        registers.setR0(immed);
+			// Set R0 to the immediate value
+			registers.setR0(immed);
 
 	        // Set PC to the value stored in R3
 	        registers.setPC(registers.getR3());
 	    }
-	    
+
 	    public void src(int value) {
 	    	int r = (value >> 8) & 3;
 			int al = (value >> 7) & 1;
@@ -398,6 +347,47 @@ public class Instructions {
 			
 			registers.setRnByNum(r, register);
 	    }
+
+		
+
+	public void in(int value) {
+		int r = (value >> 7) & 3;
+		int devID =  value & 31;
+		if (devID == Const.DevId.KEYBOARD.getValue()) {
+			String buffer = memory.getKeyboardContent();
+
+			if (buffer != null && buffer.length() > 0) {
+
+				int val = buffer.charAt(0);
+				registers.setRnByNum(r, val);
+				memory.setKeyboardContent(buffer.substring(1, buffer.length()));
+
+			} else {
+				registers.setRnByNum(r, 0);
+			}
+
+		}
+	}
+
+	public void out(int value) {
+		int r = (value >> 7) & 3;
+		int devID =  value & 31;
+		//int register1 = registers.getRnByNum(r);
+		int val = registers.getRnByNum(r);
+		char c = (char) val;
+		memory.setKeyboardContent(String.valueOf(c));
+	}
+
+	public void chk(int value) {
+		int r = (value >> 7) & 3;
+		int devID =  value & 31;
+		if (devID == Const.DevId.KEYBOARD.getValue()) {
+			registers.setRnByNum(r, 1);
+		}
+		if (devID == Const.DevId.CARD.getValue() || devID == Const.DevId.PRINTER.getValue()) {
+			registers.setRnByNum(r, 1);
+		}
+	}
 	    /*
 	    public void sob(int value) {
 	        int r = (value >> 6) & 3;

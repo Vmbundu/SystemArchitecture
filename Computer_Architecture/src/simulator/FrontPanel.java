@@ -305,7 +305,7 @@ public class FrontPanel extends JFrame {
         keyboardReader.addMouseListener(new MouseAdapter() {
                                             public void mousePressed(MouseEvent e) {
                                                 memory.setKeyboardContent(consoleKeyboard.getText());
-                                                printMessage("Input: " + consoleKeyboard.getText());
+                                                //printMessage("Input: " + consoleKeyboard.getText());
                                             }
                                         });
         FrontPanel.getContentPane().add(pnlInputConsole);
@@ -468,8 +468,24 @@ public class FrontPanel extends JFrame {
                     registers.increasePCByOne();
                     break;
 
+                case 32:
+                    instruct.in(value);
+                    registers.increasePCByOne();
+                    break;
+                case 33:
+                    instruct.out(value);
+                    registers.increasePCByOne();
+                    break;
+                case 34:
+                    instruct.chk(value);
+                    registers.increasePCByOne();
+                    break;
+
             }
-		  display();
+		    display();
+            getCacheLines();
+            //memory.getKeyboardContent();
+
 	  }
     
     //Listener for the step button
@@ -576,7 +592,7 @@ public class FrontPanel extends JFrame {
                 //action.accept(value); // Use the Consumer to accept the value
                 //System.out.println("instruction value: " + buffer);
             	System.out.println("Opcode Set!");
-                printMessage("Opcode set!");
+                //printMessage("Opcode set!");
                 //printConsole("X1 is set to: " + value);
                 getCacheLines();
                 getCacheLines();
@@ -591,7 +607,7 @@ public class FrontPanel extends JFrame {
             	memory.Delete();
                 registers.init();
                 System.out.println("IPL");
-                printMessage("IPL");
+                //printMessage("IPL");
                 try {
 					
 					//Code for User Selected Input txt file
@@ -609,7 +625,7 @@ public class FrontPanel extends JFrame {
 					}
 				}catch(Exception exception) {
 					System.out.print("Problem");
-                    printMessage("Problem");
+                    //printMessage("Problem");
                 }
 				
 				String str = null;
@@ -618,7 +634,7 @@ public class FrontPanel extends JFrame {
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					System.out.println("Done");
-                    printMessage("Done");
+                    //printMessage("Done");
 					return;
 				}
 				
@@ -706,10 +722,10 @@ public class FrontPanel extends JFrame {
                             	int value = Integer.parseInt(binVal, 2);
                                 registers.setRegistersByName(regWords[i], value);
                                 System.out.println(regWords[i]+" Bin Value: "+binVal+" was set!");
-                                printMessage(regWords[i]+" Bin Value: "+binVal+" was set!");
+                                //printMessage(regWords[i]+" Bin Value: "+binVal+" was set!");
                             }
-                            
-                            
+
+
                         }
             		}
             	}
@@ -744,7 +760,7 @@ public class FrontPanel extends JFrame {
         for (Cache.CacheLine line : memory.getCache().getCacheLines()) {
             this.cacheConsole.append(line.getAddress() + " " + line.getData());
         }
-        printMessage("Get new Cache data.");
+        //printMessage("Get new Cache data.");
     }
     
     //Main function where the simulator starts
