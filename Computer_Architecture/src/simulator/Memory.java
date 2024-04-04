@@ -11,6 +11,7 @@ public class Memory {
 	static HashMap<Integer, Integer> memory;
 	private Cache cache;
 	private String keyboardContent;
+	private String printerContent;
 	public Memory() {
 		memory = new HashMap<Integer, Integer>();
 		cache = new Cache();
@@ -89,11 +90,18 @@ public class Memory {
 		cache.addLine(address, data);
 	}
 
+	public String getPrinterContent() {
+		return this.printerContent;
+	}
+	public void setPrinterContent(String inputStr) {
+		this.printerContent = inputStr;
+	}
 	public String getKeyboardContent() {
 		return this.keyboardContent;
 	}
 	public void setKeyboardContent(String keyboardContent) {
 		this.keyboardContent = keyboardContent;
+		System.out.println("keyboardContent: " + keyboardContent);
 		/*String[] lines = keyboardContent.split(System.getProperty("line.separator"));
 		for (int i = 0; i < lines.length; i++) {
 			String resultStr = "000000";
