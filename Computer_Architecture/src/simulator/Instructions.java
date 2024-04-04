@@ -1,5 +1,7 @@
 package simulator;
 
+import simulator.util.Const;
+
 import javax.swing.JTextField;
 
 public class Instructions {
@@ -288,25 +290,64 @@ public class Instructions {
 		registers.setRnByNum(rx, (~register1) & 0xFFFF);
 	}
 	
-	 public void jsr(int value) {
-	        int ix = (value >> 8) & 3;
-	        int address = exactAddress(value);
+	public void jsr(int value) {
+		int ix = (value >> 8) & 3;
+		int address = exactAddress(value);
 
-	        // Save the return address (PC + 1) in R3
-	        registers.setR3(registers.getPC() + 1);
+		// Save the return address (PC + 1) in R3
+		registers.setR3(registers.getPC() + 1);
 
-	        // Set the Program Counter (PC) to the effective address
-	        registers.setPC(address);
-	    }
-	    public void rfs(int value) {
-	        int immed = (value >> 11) & 31; // Extract the immediate value from the instruction
+		// Set the Program Counter (PC) to the effective address
+		registers.setPC(address);
+	}
+	public void rfs(int value) {
+		int immed = (value >> 11) & 31; // Extract the immediate value from the instruction
 
-	        // Set R0 to the immediate value
-	        registers.setR0(immed);
+		// Set R0 to the immediate value
+		registers.setR0(immed);
 
-	        // Set PC to the value stored in R3
-	        registers.setPC(registers.getR3());
-	    }
+		// Set PC to the value stored in R3
+		registers.setPC(registers.getR3());
+	}
+
+	public void in(int value) {
+		int r = (value >> 7) & 3;
+		int devID =  value & 31;
+		if (devID == Const.DevId.KEYBOARD.getValue()) {
+			String buffer = memory.getKeyboardContent();
+
+			if (buffer != null && buffer.length() > 0) {
+
+				int val = buffer.charAt(0);
+				registers.setRnByNum(r, val);
+				memory.setKeyboardContent(buffer.substring(1, buffer.length()));
+
+			} else {
+				registers.setRnByNum(r, 0);
+			}
+
+		}
+	}
+
+	public void out(int value) {
+		int r = (value >> 7) & 3;
+		int devID =  value & 31;
+		//int register1 = registers.getRnByNum(r);
+		int val = registers.getRnByNum(r);
+		char c = (char) val;
+		memory.setKeyboardContent(String.valueOf(c));
+	}
+
+	public void chk(int value) {
+		int r = (value >> 7) & 3;
+		int devID =  value & 31;
+		if (devID == Const.DevId.KEYBOARD.getValue()) {
+			registers.setRnByNum(r, 1);
+		}
+		if (devID == Const.DevId.CARD.getValue() || devID == Const.DevId.PRINTER.getValue()) {
+			registers.setRnByNum(r, 1);
+		}
+	}
 	    /*
 	    public void sob(int value) {
 	        int r = (value >> 6) & 3;
