@@ -34,7 +34,7 @@ public class Instructions {
 		  int r = (value >> 8) & 3;
 		  int result = exactAddress(value);
 		  
-		  
+		  System.out.println("Address " + Integer.toString(result));
 		  result = memory.getMemory(result);
 		  
 		  registers.setRnByNum(r, result);
@@ -359,6 +359,44 @@ public class Instructions {
 
 	        // Set PC to the value stored in R3
 	        registers.setPC(registers.getR3());
+	    }
+	    
+	    public void src(int value) {
+	    	int r = (value >> 8) & 3;
+			int al = (value >> 7) & 1;
+			int lr = (value >> 6) & 1;
+			int count = value & 15;
+			
+			int register = registers.getRnByNum(r);
+			
+			if(lr == 1) {
+				register = register << count;
+			}else {
+				if(al == 1) {
+					register = register >> count;
+				}else {
+					register = register >>> count;
+				}
+			}
+			
+			registers.setRnByNum(r, register);
+	    }
+	    
+	    public void rrc(int value) {
+	    	int r = (value >> 8) & 3;
+			int al = (value >> 7) & 1;
+			int lr = (value >> 6) & 1;
+			int count = value & 15;
+			
+			int register = registers.getRnByNum(r);
+			
+			if(lr == 1) {
+				register = (register << count) | (register >> (16 - count));
+			}else {
+				register = (register << count) | (register >> (16 - count));
+			}
+			
+			registers.setRnByNum(r, register);
 	    }
 	    /*
 	    public void sob(int value) {

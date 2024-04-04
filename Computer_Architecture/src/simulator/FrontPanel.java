@@ -385,10 +385,12 @@ public class FrontPanel extends JFrame {
 		    int opcode = value >> 10;
 		    String op = Integer.toOctalString(opcode);
 		    opcode = Integer.parseInt(op);
+		    System.out.println("Address: " + Integer.toOctalString(mar)+"Value: "+Integer.toOctalString(value));
 		    System.out.println("Opcode: " + opcode);
 		    switch(opcode) {
                 case 0:
                     halt = true;
+                    break;
                 case 1:
                     instruct.ldr(value);
                     registers.increasePCByOne();
@@ -440,17 +442,14 @@ public class FrontPanel extends JFrame {
                 case 17:
                 	System.out.println("in SMR");
                 	instruct.SMR(value);
-                	registers.increasePCByOne();
                 	break;
                 case 20:
                 	System.out.println("in AIR");
                 	instruct.AIR(value);
-                	registers.increasePCByOne();
                 	break;
                 case 21:
                 	System.out.println("in SIR");
                 	instruct.SIR(value);
-                	registers.increasePCByOne();
                 	break;
                 case 24:
                     instruct.trr(value);
