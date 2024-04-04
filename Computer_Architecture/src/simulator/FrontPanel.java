@@ -430,6 +430,7 @@ public class FrontPanel extends JFrame {
     		  	case 12:
     		  		instruct.jsr(value);
     		  		break;
+
                 case 23:
                     instruct.dvd(value);
                     registers.increasePCByOne();
@@ -474,6 +475,7 @@ public class FrontPanel extends JFrame {
                     break;
                 case 33:
                     instruct.out(value);
+                    pushConsoleContent();
                     registers.increasePCByOne();
                     break;
                 case 34:
@@ -753,6 +755,13 @@ public class FrontPanel extends JFrame {
 
     private void printMessage(String message){
         consolePrinter.append(message + "\n");
+    }
+
+    private void pushConsoleContent() {
+        if (memory.getPrinterContent() != null) {
+            consolePrinter.append(memory.getPrinterContent());
+            memory.setPrinterContent("");
+        }
     }
 
     //Posts the results of the Cache to the Panel 

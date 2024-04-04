@@ -220,7 +220,7 @@ public class Instructions {
 			  int result = registers.getRnByNum(regx) * registers.getRnByNum(regy);
 			  if(result > Integer.MAX_VALUE || result < Integer.MIN_VALUE)
 			  {
-				  registers.setCCElementByBit(Const.ConditionCode.OVERFLOW(0));
+				  registers.setCCElementByBit(Const.ConditionCode.OVERFLOW.getValue(), true);
 			  }
 			  else
 			  {
@@ -375,7 +375,7 @@ public class Instructions {
 		//int register1 = registers.getRnByNum(r);
 		int val = registers.getRnByNum(r);
 		char c = (char) val;
-		memory.setKeyboardContent(String.valueOf(c));
+		memory.setPrinterContent(String.valueOf(c));
 	}
 
 	public void chk(int value) {
