@@ -80,7 +80,61 @@ public class Const {
      */
     public static final HashMap<String, String> OPCODE = new HashMap<String, String>();
     static {
-        OPCODE.put(NumeralConvert.OctalToBinary("0", 6), "HLT");
+        //Instructions for four parameters
+
+        //OPCODE.put("HLT", "00");
+        OPCODE.put("LDR", "01");
+        OPCODE.put("STR", "02");
+        OPCODE.put("LDA", "03");
+        OPCODE.put("LDX", "04");
+        OPCODE.put("STX", "05");
+
+        OPCODE.put("JZ", "06");
+        OPCODE.put("JNE", "07");
+        OPCODE.put("JCC", "10");
+        OPCODE.put("JMA", "11");
+        OPCODE.put("JSR", "12");
+        OPCODE.put("RFS", "13");
+        OPCODE.put("SOB", "14");
+        OPCODE.put("JGE", "15");
+
+        //Listing of Arithmetic/Logical instructions
+        //Memory/Register exchange instructions
+        OPCODE.put("AMR", "16");
+        OPCODE.put("SMR", "17");
+        //Instructions with Intermediates
+        OPCODE.put("AIR","20");
+        OPCODE.put("SIR", "21");
+        //Instructions for register to register operations
+        OPCODE.put("MLT", "22");
+        OPCODE.put("DVD", "23");
+        OPCODE.put("TRR", "24");
+        OPCODE.put("AND", "25");
+        OPCODE.put("ORR", "26");
+        OPCODE.put("NOT", "27");
+
+
+        //Instructions for shift/rotation operations
+        OPCODE.put("SRC", "30");
+        OPCODE.put("RRC", "31");
+
+        //Listing of Input/Output instructions
+        //Methods with 2 parameters(Input/Output Operations)
+        OPCODE.put("IN", "32");
+        OPCODE.put("OUT", "33");
+        OPCODE.put("CHK", "34");
+        //Methods for floating points
+        OPCODE.put("FADD", "35");
+        OPCODE.put("FSUB", "36");
+        OPCODE.put("VADD", "37");
+        OPCODE.put("VSUB", "40");
+        OPCODE.put("CNVRT", "41");
+        OPCODE.put("LDFR", "42");
+        OPCODE.put("STFR", "43");
+        //OPCODE.put("SETCCE", "44");
+        //OPCODE.put("TRAP", "45");
+
+        /*OPCODE.put(NumeralConvert.OctalToBinary("0", 6), "HLT");
         OPCODE.put(NumeralConvert.OctalToBinary("1", 6), "LDR");
         OPCODE.put(NumeralConvert.OctalToBinary("2", 6), "STR");
         OPCODE.put(NumeralConvert.OctalToBinary("3", 6), "LDA");
@@ -124,7 +178,7 @@ public class Const {
         OPCODE.put(NumeralConvert.OctalToBinary("43", 6), "STFR");
 
         OPCODE.put(NumeralConvert.OctalToBinary("44", 6), "SETCCE");
-        OPCODE.put(NumeralConvert.OctalToBinary("45", 6), "TRAP");
+        OPCODE.put(NumeralConvert.OctalToBinary("45", 6), "TRAP");*/
 
     }
 

@@ -52,28 +52,5 @@ public class InputOutput {
     }
 
     //Methods for input/output operations
-    public void io_operations(String[] arr, int opcode, FileWriter output, int index){
-        //Method for i/o instructions
-        String [] para = arr[1].split(",");
-        int r = Integer.parseInt(para[0]);
-        int devid = Integer.parseInt(para[1]);
 
-        int result = opcode;
-        result = (result << 2) | r;
-        result = (result << 8) | devid;
-
-        String value = Integer.toOctalString(result);
-        String indexstr = Integer.toOctalString(index);
-
-        int indexZero = 6 - indexstr.length();
-        int valueZero = 6 - value.length();
-
-        try {
-            output.write("0".repeat(indexZero)+indexstr+"      "+ "0".repeat(valueZero)+value+"\n");
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-    }
 }
