@@ -206,6 +206,22 @@ public class FrontPanel extends JFrame {
         pnlButtons.add(buttonRun);
         pnlButtons.add(buttonHalt);
         pnlButtons.add(buttonStep);
+        
+        buttonRun.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                while(halt != true) {
+                	step();
+                }
+                //printMessage("Input: " + consoleKeyboard.getText());
+            }
+        });
+        
+        buttonHalt.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                halt = true;
+                //printMessage("Input: " + consoleKeyboard.getText());
+            }
+        });
 
 
         pnlAlu = new JPanel();
@@ -305,6 +321,7 @@ public class FrontPanel extends JFrame {
         keyboardReader.addMouseListener(new MouseAdapter() {
                                             public void mousePressed(MouseEvent e) {
                                                 memory.setKeyboardContent(consoleKeyboard.getText());
+                                                consoleKeyboard.getText();
                                                 //printMessage("Input: " + consoleKeyboard.getText());
                                             }
                                         });

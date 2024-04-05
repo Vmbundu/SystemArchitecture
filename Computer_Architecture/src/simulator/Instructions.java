@@ -365,7 +365,9 @@ public class Instructions {
 				memory.setKeyboardContent(buffer.substring(1, buffer.length()));
 
 			} else {
-				registers.setRnByNum(r, 0);
+				System.out.println("Please Enter an input!");
+				in(value);
+				//registers.setRnByNum(r, 0);
 			}
 
 		}
@@ -377,7 +379,13 @@ public class Instructions {
 		//int register1 = registers.getRnByNum(r);
 		int val = registers.getRnByNum(r);
 		char c = (char) val;
-		memory.setPrinterContent(String.valueOf(c));
+		String outputStream = memory.getPrinterContent();
+		outputStream = String.valueOf(c)+outputStream;
+		memory.setPrinterContent(outputStream);
+		if(String.valueOf(c) == "\n") {
+			//Print to Printer
+			memory.setPrinterContent(outputStream);
+		}
 	}
 
 	public void chk(int value) {
