@@ -8,4 +8,13 @@ AIR 3,10		; load register 3 with 10
 LDR	2,2,10			;R2 GETS 12
 LDR	1,2,10,1		;R1 GETS 18
 MLT 1,2				; multiply register 1 and 2
+
 HLT                        ;STOP
+DVD 1,2;
+TRR 1,2; if r1 =r2, set cc(4)<-1, else 0
+AND 1,2; r1 = r1 and r2
+ORR 1,2; r1 = r1 or r2
+NOT 2; not value from r2
+IN 1, 0; load char from keyboard, store it into register1.
+OUT 1, 0; load char from register1, store it into printer buffer.
+CHK 1, 0 ;check if keyboard has content, store result into register1
