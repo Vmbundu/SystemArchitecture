@@ -1,0 +1,39 @@
+Data 100 ;Current List index /0
+Data 101 ; /1
+JSR 0,16    ; Jump into the reader subroutine /2
+LDR 1,0,0   ; Load the list counter /3
+SMR 1,0,1  ; For loop comparison /4
+SETCCE 1    ; /5
+LDR 1,0,0   ; Load the list counter /6
+AIR 1,1    ; Increment by 1 /7
+STR 1,0,0   ; Update the List number /8
+JNE 0,2   ; /9
+HLT      ; /10
+LOC 11   ; 
+Data 0     ; Current Symbol /11
+Data 0     ; Current Answer /12
+Data 10    ; Increase /13
+Data 100   ; Current List Value /14
+Data 35    ; End loop value /15
+IN 1,0    ; /16
+SIR 1,31  ; convert to the ascci value /17
+SIR 1,17 ; /18
+STR 1,0,12    ; Store input bit into current answer /19
+IN 1,0         ; //Beginning of loop /20
+STR 1,0,11      ; //Store into current symbol /21   
+SIR 1,10      ; Check if end cap /22
+SETCCE 1    ; /23
+JZ 0,15,1 ;  End of code /24
+LDR 1,0,11     ;Get current symbol /25
+SIR 1,31  ; convert to the ascii value /26
+SIR 1,17  ; /27
+STR 1,0,11     ; Store input into current symbol /28
+LDR 0,0,12    ; Load the current answer /29
+LDR 2,0,13    ; Load 10 /30
+MLT 0,2      ; Shift current answer /31
+AMR 1,0,11    ; Add the current symbol into result /32
+STR 1,0,12     ; Store the updated result to current answer /33 
+JMA 0,20       ; Loop /34
+LDR 1,0,12    ;Load final answer /35
+STR 1,0,0,1   ;Store at list location /36
+RFS 0         ; /37
