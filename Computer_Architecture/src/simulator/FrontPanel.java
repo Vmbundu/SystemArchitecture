@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.function.Consumer;
 
-
+//Class that controls the visuals of the panel and the button functionality 
 public class FrontPanel extends JFrame {
     private JFrame FrontPanel;
 
@@ -82,6 +82,7 @@ public class FrontPanel extends JFrame {
     private JScrollPane scrollPane3;
     private JTextArea consoleKeyboard;
     private JButton keyboardReader;
+    private String printBuffer = "";
 
     public class Pair<T, U> {
         private T first;
@@ -249,7 +250,6 @@ public class FrontPanel extends JFrame {
         FrontPanel.getContentPane().add(pnlAlu);
 
 
-        //addStoreListener(pnlR0, bntR0, value -> registers.setR0(value));
         addStoreListener(pnlR0, bntR0, value -> registers.setR0(value),"R0");
         addStoreListener(pnlR1, bntR1, value -> registers.setR1(value), "R1");
         addStoreListener(pnlR2, bntR2, value -> registers.setR2(value), "R2");
@@ -320,8 +320,24 @@ public class FrontPanel extends JFrame {
         // TODO: Add listeners in read and execute instructions according to the content.
         keyboardReader.addMouseListener(new MouseAdapter() {
                                             public void mousePressed(MouseEvent e) {
-                                                memory.setKeyboardContent(consoleKeyboard.getText());
+                                            	
+                                            	printBuffer = printBuffer+ consoleKeyboard.getText()+"\n";
+                                            	
+                                            	if(memory.getKeyboardContent() == null) {
+                                            		memory.setKeyboardContent("");
+                                            	}
+                                            	if(consoleKeyboard.getText()!="") {
+                                            		String buffer = memory.getKeyboardContent()+ consoleKeyboard.getText()+"\n";
+                                                	memory.setKeyboardContent(buffer);
+                                            	}         
+                                            	consolePrinter.setText(printBuffer);
+                                            	consoleKeyboard.setText("");
+                                            	
+                                            	/*
+                                            	memory.setKeyboardContent(consoleKeyboard.getText()+"\n");
                                                 consoleKeyboard.getText();
+                                                */
+                                                
                                                 //printMessage("Input: " + consoleKeyboard.getText());
                                             }
                                         });
@@ -402,7 +418,19 @@ public class FrontPanel extends JFrame {
 		    int opcode = value >> 10;
 		    String op = Integer.toOctalString(opcode);
 		    opcode = Integer.parseInt(op);
-		    System.out.println("Address: " + Integer.toOctalString(mar)+"Value: "+Integer.toOctalString(value));
+		    
+		    String listResult1 = Integer.toString(memory.getMemory(100));
+		    String listResult2 = Integer.toString(memory.getMemory(101));
+		    String listResult3 = Integer.toString(memory.getMemory(102));
+		    System.out.println("Listing Address: " + Integer.toString(100) +" Value: "+listResult1);
+		    System.out.println("Listing Address: " + Integer.toString(101) +" Value: "+listResult2);
+		    System.out.println("Listing Address: " + Integer.toString(102) +" Value: "+listResult3);
+		    //System.out.println("Current Address: "+Integer.toString(mar));
+		    //System.out.println("Current Answer: " + currAnswer);
+		    //System.out.println("Current Symbol " + currSymbol);
+		    System.out.println("Current Address" + Integer.toString(pc));
+		    System.out.println("Current Output: " + Integer.toString(memory.getMemory(1)));
+		    System.out.println("Register 0: " + Integer.toString(registers.getR1()));
 		    System.out.println("Opcode: " + opcode);
 		    switch(opcode) {
                 case 0:
@@ -447,7 +475,6 @@ public class FrontPanel extends JFrame {
     		  	case 12:
     		  		instruct.jsr(value);
     		  		break;
-
                 case 23:
                     instruct.dvd(value);
                     registers.increasePCByOne();
@@ -470,6 +497,7 @@ public class FrontPanel extends JFrame {
                 case 21:
                 	System.out.println("in SIR");
                 	instruct.SIR(value);
+                	registers.increasePCByOne();
                 	break;
                 case 24:
                     instruct.trr(value);
@@ -487,10 +515,11 @@ public class FrontPanel extends JFrame {
                     instruct.not(value);
                     registers.increasePCByOne();
                     break;
-
+                case 31:
+                	instruct.rrc(value);
+                	registers.increasePCByOne();
                 case 32:
                     instruct.in(value);
-                    registers.increasePCByOne();
                     break;
                 case 33:
                     instruct.out(value);
@@ -501,6 +530,22 @@ public class FrontPanel extends JFrame {
                     instruct.chk(value);
                     registers.increasePCByOne();
                     break;
+                case 22:
+                	instruct.MLT(value);
+                	registers.increasePCByOne();
+                	break;
+                case 14:
+                	instruct.sob(value);
+                	break;
+                case 13:
+                	instruct.rfs(value);
+                	break;
+                case 15:
+                	instruct.jge(value);
+                	break;
+                case 30:
+                	instruct.src(value);
+                	break;
 
             }
 		    display();
@@ -532,7 +577,7 @@ public class FrontPanel extends JFrame {
         label.setPreferredSize(new Dimension(40, label.getPreferredSize().height));
         panel.add(label);
  
-        JTextField input = new JTextField("0".repeat(registers.getBitLongByName(registerName)));
+        JTextField input = new JTextField("000",registers.getBitLongByName(registerName));
         panel.add(input);
         JButton button = new JButton("*");
         panel.add(button);;
@@ -631,6 +676,7 @@ public class FrontPanel extends JFrame {
             	memory.Delete();
                 registers.init();
                 System.out.println("IPL");
+                display();
                 //printMessage("IPL");
                 try {
 					

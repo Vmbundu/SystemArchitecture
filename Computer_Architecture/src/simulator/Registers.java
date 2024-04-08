@@ -333,7 +333,7 @@ public class Registers {
             return this.r3;
         return 0;
     }
-
+    //Gets registers by name directly
     public int getRegistersByName(String name) {
         if (name.equals("PC"))
             return this.pc;
@@ -365,7 +365,7 @@ public class Registers {
             return this.r3;
         return 0;
     }
-    
+    //Sets registers by name directly 
     public void setRegistersByName(String name, int value) {
         if (name.equals("PC"))
             this.pc = value;
@@ -398,7 +398,7 @@ public class Registers {
         return;
     }
 
-
+    //Gets bit sizes of each register
     public int getBitLongByName(String name) {
         if (name.equals("PC"))
             return 12;

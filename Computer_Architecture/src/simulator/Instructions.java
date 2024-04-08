@@ -2,8 +2,10 @@ package simulator;
 
 import simulator.util.Const;
 
-import javax.swing.JTextField;
+import java.util.concurrent.TimeUnit;
 
+import javax.swing.JTextField;
+//This class holds the various instructions of the console 
 public class Instructions {
 	Registers registers;
 	Memory memory;
@@ -12,7 +14,7 @@ public class Instructions {
 		this.registers = registers;
 		this.memory = memory;
 	}
-	
+	//Handles extracting the exact address
 	public int exactAddress(int value) {
 		int r = (value >> 8) & 3;
 		int ix = (value >> 6) & 3;
@@ -31,17 +33,17 @@ public class Instructions {
 		
 		return adr;
 	}
-	
+	//Load Register Instruction
 	 public void ldr(int value) {
 		  int r = (value >> 8) & 3;
 		  int result = exactAddress(value);
 		  
-		  System.out.println("Address " + Integer.toString(result));
+		  //System.out.println("Address " + Integer.toString(result));
 		  result = memory.getMemory(result);
 		  
 		  registers.setRnByNum(r, result);
-		  System.out.println("Load Complete");
-		  System.out.println("Register #: "+Integer.toString(r)+" Results: "+Integer.toString(result));
+		  //System.out.println("Load Complete");
+		  //System.out.println("Register #: "+Integer.toString(r)+" Results: "+Integer.toString(result));
 	  }
 	 
 	//Store Instruction for General Purpose Register
@@ -49,13 +51,12 @@ public class Instructions {
 		  int r = (value >> 8) & 3;
 		  int result = exactAddress(value);
 		  
-		  
 		  memory.addMemory(result, registers.getRnByNum(r));
-		  System.out.println("Store Complete");
-		  System.out.println("Register #: "+Integer.toString(r)+" Results: "+Integer.toString(result));
+		  System.out.println("STR");
+		  //System.out.println("Register #: "+Integer.toString(r)+" Results: "+Integer.toString(result));
 
 	  }
-	  
+	  //Load index register
 	  public void ldx(int value) {
 		  int xi = (value >> 6) & 3;
 		  int result = exactAddress(value);
@@ -64,20 +65,20 @@ public class Instructions {
 		  result = memory.getMemory(result);
 		  
 		  registers.setXnByNum(xi, result);
-		  System.out.println("Loaded X Register");
-		  System.out.println("Register 2 value: "+ Integer.toString(registers.getX2()));
+		  //System.out.println("Loaded X Register");
+		  //System.out.println("Register 2 value: "+ Integer.toString(registers.getX2()));
 	  }
 	  
-	//Store Instruction for General Purpose Register
+	//Store Instruction for index register 
 	  public void stx(int value) {
 		  int xi = (value >> 6) & 3;
 		  int result = exactAddress(value);
 		  
 		  
 		  memory.addMemory(result, registers.getXnByNum(xi));
-		  System.out.println("Store into General");
+		  System.out.println("Stx");
 	  }
-	  
+	  //load address instruction
 	  public void lda(int value) {
 		  int r = (value >> 6) & 3;
 		  int adr = value & 31;
@@ -86,7 +87,7 @@ public class Instructions {
 		  System.out.println("Load Direct Address");
 		  	  
 	  }
-	  
+	  //Jump at zero instruction
 	  public void jz(int value) {
 		  int result = exactAddress(value);
 		  
@@ -96,7 +97,7 @@ public class Instructions {
 			  registers.increasePCByOne();
 		  }
 	  }
-	 
+	 //Jump at not equal instruction
 	  public void jne(int value) {
 		  int result = exactAddress(value);
 		  
@@ -106,7 +107,7 @@ public class Instructions {
 			  registers.setPC(result);
 		  }
 	  }
-	  
+	  //Jump at condition code
 	  public void jcc(int value) {
 		  int r = (value >> 8) & 3;
 		  r = 3 - r;
@@ -118,11 +119,13 @@ public class Instructions {
 			  registers.increasePCByOne();
 		  }
 	  }
+	  //Jump automatically instruction
 	  public void jma(int value) {
 		  int result = exactAddress(value);
 		  registers.setPC(result);
 		  System.out.println("JMA");
 	  }
+	  //Sets the condition code
 	  public void setcce(int value) {
 		  int r = (value >> 8) & 3;
 		  int register = registers.getRnByNum(r);
@@ -137,13 +140,13 @@ public class Instructions {
 	  }
 
 		  
-	  
+	  //Add memory to register
 	   public void AMR(int value)
 	  {
 		  int y = exactAddress(value);
 		 // System.out.println("what is y: " + y);
 		  int x = memory.getMemory(y);
-		  System.out.println("what is x: " + x);
+		  //System.out.println("what is x: " + x);
 		  int register = (value >> 8) & 3;
 		 // //System.out.println("Using register: " + register);
 		  int result = registers.getRnByNum(register);
@@ -151,6 +154,7 @@ public class Instructions {
 		  registers.setRnByNum(register, result);
 		 
 	  }
+	  //Subtract memory to register
 	  public void SMR(int value)
 	  {
 		  int y = exactAddress(value);
@@ -164,11 +168,12 @@ public class Instructions {
 		  registers.setRnByNum(register, result);
 		  
 	  }
+	  //Add intermediate to register
 	  public void AIR(int value)
 	  {
 		  int y = exactAddress(value);
 		  //int x = memory.getMemory(y);
-		 //System.out.println("what is x: " + x);
+		 System.out.println("what is x: " + Integer.toString(y));
 		  int register = (value >> 8) & 3;
 		  //System.out.println("Using register: " + register);
 		  if(y != 0)
@@ -176,7 +181,7 @@ public class Instructions {
 			  int regx = registers.getRnByNum(register);
 			  if(regx == 0)
 			  {
-				  registers.setRnByNum(register, (y));
+				  registers.setRnByNum(register, y);
 			  }
 			  else
 			  {
@@ -186,6 +191,7 @@ public class Instructions {
 		  }
 		 
 	  }
+	  //Subtract intermediate to register
 	  public void SIR(int value)
 	  {
 		  int y = exactAddress(value);
@@ -198,7 +204,7 @@ public class Instructions {
 			  int regx = registers.getRnByNum(register);
 			  if(regx == 0)
 			  {
-				  registers.setRnByNum(register, (-y));
+				  registers.setRnByNum(register, 0 - y);
 			  }
 			  else
 			  {
@@ -209,11 +215,11 @@ public class Instructions {
 		
 	  }
 	  
-	  
+	  //Multiply Instruction
 	  public void MLT(int value)
 	  {
-		  int regx = (value >> 7) & 3;
-		  int regy = (value >> 7) & 3;
+		  int regx = (value >> 8) & 3;
+		  int regy = (value >> 6) & 3;
 		 
 		  if((regx == 0)||(regx == 2)&&((regy == 0)||(regy == 2)))
 		  {
@@ -227,12 +233,13 @@ public class Instructions {
 			  else
 			  {
 				  registers.setRnByNum(regx, (result >> 16));
-				  registers.setRnByNum(regx+1, (result & 0xFFF));
+				  registers.setRnByNum(regx+1, (result & 0xFFFF));
 			  }
 		  }
+		  System.out.println("MLT");
 	  }
 	  
-	  
+	  //Divide isntruction
 	  public void dvd(int value) {
 		int rx = (value >> 7) & 3;
 		int ry = (value >> 5) & 3;
@@ -253,7 +260,7 @@ public class Instructions {
 		registers.setRnByNum((rx+1), remainder);
 
 	}
-
+	//Test equality of register to register
 	public void trr(int value) {
 		int rx = (value >> 7) & 3;
 		int ry = (value >> 5) & 3;
@@ -267,7 +274,7 @@ public class Instructions {
 		}
 	}
 
-
+	//Add instruction
 	public void and(int value) {
 		int rx = (value >> 7) & 3;
 		int ry = (value >> 5) & 3;
@@ -277,6 +284,7 @@ public class Instructions {
 		registers.setRnByNum(rx, register1 & register2);
 	}
 
+	//Logical Or of register to register
 	public void orr(int value) {
 		int rx = (value >> 7) & 3;
 		int ry = (value >> 5) & 3;
@@ -286,22 +294,26 @@ public class Instructions {
 		registers.setRnByNum(rx, register1 | register2);
 	}
 
+	//Not instruction
 	public void not(int value) {
 		int rx = (value >> 7) & 3;
 		int register1 = registers.getRnByNum(rx);
-		registers.setRnByNum(rx, (~register1) & 0xFFFF);
+		int result = -1 * register1;
+		registers.setRnByNum(rx, result);
 	}
 	
+	//Jump and Save return address
 	public void jsr(int value) {
 		int ix = (value >> 8) & 3;
 		int address = exactAddress(value);
-
+		System.out.println("JSR Address" + Integer.toString(address));
 		// Save the return address (PC + 1) in R3
 		registers.setR3(registers.getPC() + 1);
 
 		// Set the Program Counter (PC) to the effective address
 		registers.setPC(address);
 	}
+	//Return from subroutine instruction
 	public void rfs(int value) {
 		int immed = (value >> 11) & 31; // Extract the immediate value from the instruction
 
@@ -312,6 +324,7 @@ public class Instructions {
 	        registers.setPC(registers.getR3());
 	}
 
+	//Shift register by count
 	public void src(int value) {
 	    	int r = (value >> 8) & 3;
 			int al = (value >> 7) & 1;
@@ -332,7 +345,7 @@ public class Instructions {
 			
 			registers.setRnByNum(r, register);
 	    }
-	    
+	    //Rotate register by count
 	    public void rrc(int value) {
 	    	int r = (value >> 8) & 3;
 			int al = (value >> 7) & 1;
@@ -351,9 +364,9 @@ public class Instructions {
 	    }
 
 		
-
+	//IN instruction
 	public void in(int value) {
-		int r = (value >> 7) & 3;
+		int r = (value >> 8) & 3;
 		int devID =  value & 31;
 		if (devID == Const.DevId.KEYBOARD.getValue()) {
 			String buffer = memory.getKeyboardContent();
@@ -363,16 +376,18 @@ public class Instructions {
 				int val = buffer.charAt(0);
 				registers.setRnByNum(r, val);
 				memory.setKeyboardContent(buffer.substring(1, buffer.length()));
-
+				registers.increasePCByOne();
+				
 			} else {
 				System.out.println("Please Enter an input!");
-				in(value);
+				
+				
 				//registers.setRnByNum(r, 0);
 			}
 
 		}
 	}
-
+	//Out instruction
 	public void out(int value) {
 		int r = (value >> 7) & 3;
 		int devID =  value & 31;
@@ -387,7 +402,7 @@ public class Instructions {
 			memory.setPrinterContent(outputStream);
 		}
 	}
-
+	//Check device statues instruction
 	public void chk(int value) {
 		int r = (value >> 7) & 3;
 		int devID =  value & 31;
@@ -398,12 +413,13 @@ public class Instructions {
 			registers.setRnByNum(r, 1);
 		}
 	}
-	
+	//Subtract one and branch 
 	public void sob(int value) {
 		int r = (value >> 7) & 3;
 		int address = exactAddress(value);
 		int register = registers.getRnByNum(r);
 		register = register - 1;
+		registers.setRnByNum(r, register);
 		
 		if(register > 0) {
 			registers.setPC(address);
@@ -411,7 +427,7 @@ public class Instructions {
 			registers.increasePCByOne();
 		}
 	}
-	
+	//Jump if greater than 
 	public void jge(int value) {
 		int r = (value >> 7) & 3;
 		int address = exactAddress(value);

@@ -25,7 +25,7 @@ public class Memory {
 		String strVAL = Integer.toString(value);
 		
 		
-		System.out.println("MAR: "+strADR+" MBR: "+strVAL);
+		//System.out.println("MAR: "+strADR+" MBR: "+strVAL);
 	}
 	
 	//Get data/instructions from memory
