@@ -1,0 +1,24 @@
+Data 0     ; Current Symbol
+Data 0     ; Current Answer
+Data 10    ; Increase
+Data 100   ; Current List Value
+IN 1,0    ;
+SIR 1,31  ; convert to the ascci value
+SIR 1,17 ;
+STR 1,0,1    ; Store input bit into current answer
+IN 1,0         ; //Beginning of loop
+STR 1,0,0      ; //Store into current symbol   
+SIR 1,10      ; Check if end cap
+SETCCE 1    ;
+JZ 0,23 ;  End of code
+LDR 1,0,0     ;Get current symbol
+SIR 1,31  ; convert to the ascii value
+SIR 1,17  ;
+STR 1,0,0     ; Store input into current symbol
+LDR 0,0,1    ; Load the current answer
+LDR 2,0,2    ; Load 10
+MLT 0,2      ; Shift current answer 
+AMR 1,0,0    ; Add the current symbol into result
+STR 1,0,1     ; Store the updated result to current answer 
+JMA 0,8       ; Loop
+HLT           ;
