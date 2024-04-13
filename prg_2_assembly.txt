@@ -1,0 +1,59 @@
+Data 0   ;   Pointer value
+Data 0   ; Starting position of sentence 1
+Data 50     ; Starting position of sentence 2
+Data 100    ; Starting position of sentence 3 
+Data 150   ; Starting position of sentence 4
+Data 200   ; Starting position of sentence 5
+Data 250   ; Starting position of sentence 6
+Data 300   ; Start of the user word
+Data 1 ; Current sentence value 
+Data 0 ; Current word value
+Data 400     ; J1
+Data 407     ; J2
+Data 420     ; J3
+
+
+LOC 400; Loading in a sentence 
+IN 0,0  ; 400 J1
+STR 0,0,0,1    ; Store input bit into current answer
+SIR 0,23       ; 
+SIR 0,23       ; 
+SETCCE 0       ;
+JNE 0,11,1     ; Check if its a "."
+HLT            ;
+LDR 0,0,0      ; Load the sentence index value
+AIR 0,1        ; increment the index
+STR 0,0,0      ; Store the index value 
+JMA 0, 10;
+
+LOC 420
+IN 0,0  ;Load in the user word //J3
+SIR 0,10 ;
+SETCCE 0  ;
+JZ 0,(J4) ; Check if its a new line
+AIR 0,10  ;
+STR 0,0,0,1;
+LDR 0,0,0      ; Load the sentence index value
+AIR 0,1        ; increment the index
+STR 0,0,0      ; Store the index value 
+JMA 0, (J3);
+HLT        ;
+
+
+IN 1,0         ; //Beginning of loop
+STR 1,0,0      ; //Store into current symbol   
+SIR 1,10      ; Check if end cap
+SETCCE 1    ;
+JZ 0,23 ;  End of code
+LDR 1,0,0     ;Get current symbol
+SIR 1,31  ; convert to the ascii value
+SIR 1,17  ;
+STR 1,0,0     ; Store input into current symbol
+LDR 0,0,1    ; Load the current answer
+LDR 2,0,2    ; Load 10
+MLT 0,2      ; Shift current answer 
+AMR 1,0,0    ; Add the current symbol into result
+STR 1,0,1     ; Store the updated result to current answer 
+JMA 0,8       ; Loop
+HLT           ;
+
