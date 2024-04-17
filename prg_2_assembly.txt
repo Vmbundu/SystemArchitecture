@@ -57,3 +57,50 @@ STR 1,0,1     ; Store the updated result to current answer
 JMA 0,8       ; Loop
 HLT           ;
 
+// Loop for comparison. 
+LOC 300			;LOAD input word
+IN 0,0			;
+STR 1,0,0		;
+LDR 0,0,3		; Counter for characters in input word;
+AIT 0,1			; Increment counter
+STR 0,0,3		;
+LDR 0,0,1		; move to next symbol
+SIR 0,23    	; 
+SIR 0,23    	; 
+SETCCE 0    	;
+JNE 0,77,1  	; Check if its a "."
+
+
+//outer loop
+LOC 0			; LOAD sentence 1
+IN 0,0			; get sentence 
+STR 3,0,500		;load counter in location 500
+RFS				got to innner loop
+LOC 50
+go to inner loop
+LOC 100		go to inner loop
+go to inner loop
+LOC 150 
+go to inner loop
+LOC 200		go to inner loop
+go to inner loop
+LOC 250 
+go to inner loop
+
+
+//inner loop
+LDR 1,0,0		;Store first value of word in sentence in register 1 (need to fix)
+SIR 0,23       ; 
+SIR 0,23       ; 
+SETCCE 0       ;
+JNE 0,11,1     ; Check if its a "."
+LDR 2,0,0		;Store first value of word inputed in register 2 	(need to fix)
+TRR 1,2			; 
+SETCCE 0 		;
+AIR 3,1			;
+LDR 0,0,500		; 
+TRR 0,3			;		;
+JNE 0,58		; if its the same length of equal go to HLT
+RFS
+
+
