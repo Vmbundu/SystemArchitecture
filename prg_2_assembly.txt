@@ -3,18 +3,20 @@ Data 0   ;   Pointer value(word)
 Data 50   ; Starting position of sentences
 Data 400   ; Start of the user word
 Data 1 ; Current sentence value 
-Data 0 ; Current word value
+Data 1 ; Current word value
 Data 506  ;
 Data 500     ; J1
 Data 570 ;
 Data 507     ; J2
 Data 520     ; J3
 Data 540     ; J5
-Data 552     ; J4
-Data 565     ; J6
+Data 551     ; J4
+Data 564     ; J6
 Data 568     ; J7
-Data 571     ;
-Data 50      ; pointer increment 
+Data 577     ;
+Data 542      ; pointer increment
+Data 590     ; Word Comparator  
+Data 604     ;
 
 
 LOC 500  ; Loading in a sentence 
@@ -37,42 +39,66 @@ JSR 0,7,1     ;
 LDR 0,0,3   ; Loading the word starting point 
 STR 0,0,0  ;
 JSR 0,7,1    ;
-HLT          ;
+JSR 0,11,1          ;
 
 LOC 540       ; Sentence Computation
 LDR 0,0,2     ; Load sentence /540 - J5 
 STR 0,0,0     ; /541
 LDR 0,0,0,1   ; Loading in the sentence /542
 SIR 0,31      ; /543
-SIR 0,1       ; /545
-SETCCE 0      ; Check if its a white space /546
-JNE 0,12    ; /547
-LDR 1,0,5   ; /548
-AIR 1,1     ; /549
-STR 1,0,5    ; Increment the word value /550
-JMA 0,15    ; /551
-AIR 0,31      ; /552 J4
-AIR 0,1       ; /553
-SIR 0,23      ; Checks if value is a period /554
-SIR 0,23      ; /555
-SETCCE 0      ; /556
-JNE 0,13    ; /557
-LDR 1,0,4   ; /558
-AIR 1,1     ; /559
-STR 1,0,4    ; Increment the sentence value /560
-LDR 1,0,3    ; /561
-SIR 1,25     ; /562
-SIR 1,25     ; /563
-STR 1,0,5    ; Reset Word Value /564
-AIR 0,23     ; /565 J6
-AIR 0,23     ; /566
-SIR 0,10      ; /567
-SETCCE 0      ; /568
-JNE  0,15   ; /569
-HLT           ; /570
-AIR 0,10      ; /571
-LDR 0,0,0     ; Load in the sentence index /572 J7
-AIR 0,1       ; Increment the sentence index /573
-STR 0,0,0     ; /574
-JMA 0,11    ; /575
+SIR 0,1       ; /544
+SETCCE 0      ; Check if its a white space /545
+JNE 0,12,1    ; /546
+LDR 1,0,5   ; /547
+AIR 1,1     ; /548
+STR 1,0,5    ; Increment the word value /549
+JMA 0,15,1    ; /550
+AIR 0,31      ; /551 J4
+AIR 0,1       ; /552
+SIR 0,23      ; Checks if value is a period /553
+SIR 0,23      ; /554
+SETCCE 0      ; /555
+JNE 0,13,1    ; /556
+LDR 1,0,4   ; /557
+AIR 1,1     ; /558
+STR 1,0,4    ; Increment the sentence value /559
+LDR 1,0,2    ; /560
+SIR 1,25     ; /561
+SIR 1,24     ; /562
+STR 1,0,5    ; Reset Word Value /563
+AIR 0,23     ; /564 J6
+AIR 0,23     ; /565
+SIR 0,10      ; /566 Check if a new line
+SETCCE 0      ; /567
+JNE  0,8,1   ; /568
+HLT           ; /569
+AIR 0,10      ; /570
+LDR 1,0,3   ; Load the word value /571
+STR 1,0,1     ; Store word pointer /572
+LDR 1,0,1,1   ; Loading in current word value /573
+TRR 0,1       ; /574
+JNE 0,15,1    ; Checking if the values are the same /575
+JSR 0,17,1    ; Call Word Comparator /576
+LDR 0,0,0     ; Load in the sentence index /577 J7
+AIR 0,1       ; Increment the sentence index /578
+STR 0,0,0     ; /579
+JMA 0,16,1    ; /580
+
+//Finish Word comparator
+LOC 590       ; Word Comparator Function 
+LDR 0,0,0     ; /590
+AIR 0,1       ; /591
+STR 0,0,0     ; Increment the sentence value /592 
+LDR 0,0,1     ; /593
+AIR 0,1       ; /594
+STR 0,0,1     ; Increment the word value /595
+LDR 1,0,0,1   ; Load in the sentence /596
+LDR 0,0,1,1   ; Load in the word /597
+TRR 0,1       ; Check if the values match /598
+JZ 0,17,1    ;  /599
+SIR 0,10      ; J7 /600
+SETCCE 0      ; /601
+JNE 0,18,1    ; /602
+HLT           ; Reached the end of the word/ Match found /603
+RFS 0         ; /604
 
