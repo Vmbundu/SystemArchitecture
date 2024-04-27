@@ -18,6 +18,8 @@ Data 323   ;
 Data 315   ;
 Data 300   ;
 Data 330   ;
+Data 350   ; JUMP Location(350)
+
 
 LOC 200     ;
 JSR 0,11,1    ; Jump into the reader subroutine /200
@@ -91,20 +93,20 @@ LDR 0,0,0    ; /330
 SMR 0,0,7    ; /331
 SETCCE 0     ;
 JNE 0,17,1 ; /333
-HLT          ; /334
+JMA 0,20,1          ; /334
 
 LOC 350       ;
-LDR 0,0,8     ; Load final output value /92
-LDR 2,0,4    ; Load in the 10 value /93
-DVD 0,2      ; Divide the output by 10 /94
-AIR 1,31     ; /95
-AIR 1,17     ; Convert back to string /96
-OUT 1,0      ; /97
-STR 0,0,8    ; Store quotient /98 
-SETCCE 0     ; /99
-JNE 0,0,(JUMP LOC)   ; If the value hasn't been completely divided /103
-LDR 1,0,4   ; /104
-OUT 1,0      ; /105
-HLT    ; /106
+LDR 0,0,8     ; Load final output value /350
+LDR 2,0,4    ; Load in the 10 value /351
+DVD 0,2      ; Divide the output by 10 /352
+AIR 1,31     ; /353
+AIR 1,17     ; Convert back to string /354
+OUT 1,0      ; /355
+STR 0,0,8    ; Store quotient /356 
+SETCCE 0     ; /357
+JNE 0,20,1   ; If the value hasn't been completely divided /358
+LDR 1,0,4   ; /359
+OUT 1,0      ; /360
+HLT    ; /361
 
 
