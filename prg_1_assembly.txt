@@ -1,0 +1,110 @@
+Data 110 ;Current List index /0
+Data 120  ; /1 Also will be the out value
+Data 0     ; Current Symbol  
+Data 0     ; Current Answer  
+Data 10    ; Increase 
+Data 110   ; Current List Value /18
+Data 0     ; Current input value 
+Data 119    ; End loop value /19
+Data 0     ; Current output values 
+Data 0     ; Lowest Difference value
+Data 0     ; Current Difference Value 
+Data 250   ; JUMP Locations(200)
+Data 200   ;
+Data 269   ; JUMP Location(250)
+Data 254   ;
+Data 314   ; JUMP Location(300)
+Data 323   ;
+Data 315   ;
+Data 300   ;
+Data 330   ;
+
+LOC 200     ;
+JSR 0,11,1    ; Jump into the reader subroutine /200
+LDR 1,0,0   ; Load the list counter /201
+SMR 1,0,1  ; For loop comparison /202
+SETCCE 1    ; /5 ; Location of first jump /203
+LDR 1,0,0   ; Load the list counter; Location of second jump /204
+AIR 1,1    ; Increment by 1 /205
+STR 1,0,0   ; Update the List number /206
+JNE 0,12,1   ; /207
+JMA 0,18,1       ; Loop /268
+
+
+
+LOC 250   ;
+IN 1,0    ; /250
+SIR 1,31  ; convert to the ascci value /251
+SIR 1,17    ; /252
+STR 1,0,3    ; Store input bit into current answer /253
+IN 1,0         ; //Beginning of loop /254
+STR 1,0,2     ; //Store into current symbol /255   
+SIR 1,10      ; Check if end cap /256
+SETCCE 1    ; /257
+JZ 0,13,1  ;  End of code /258
+LDR 1,0,2     ;Get current symbol /259
+SIR 1,31  ; convert to the ascii value /260
+SIR 1,17  ; /261
+STR 1,0,2     ; Store input into current symbol /262
+LDR 0,0,3    ; Load the current answer /263
+LDR 2,0,4    ; Load 10 /264
+MLT 0,2      ; Shift current answer /265
+AMR 1,0,2    ; Add the current symbol into result /266
+STR 1,0,3     ; Store the updated result to current answer /267 
+JMA 0,14,1       ; Loop /268
+LDR 1,0,3    ;Load final answer /269
+STR 1,0,0,1   ;Store at list location /270
+RFS 0         ; /271
+
+LOC 300       ;
+LDR 0,0,0   ; Loading the input variable /300
+SIR 0,1     ;  Subtract current loop     /301
+STR 0,0,0    ; /302
+LDR 0,0,0,1   ; /303
+STR 0,0,6    ; Store the current input /304
+LDR 1,0,0     ; Load the list variable /305
+SIR 1,10      ; Set Current list value /306 Change to 20
+STR 1,0,0     ; Store the variable back into the orginal spot /307
+LDR 1,0,0,1   ; Going to load the new investigated value /308
+STR 1,0,8     ; Store output value /309
+SMR 1,0,6   ; Subtract current list value from input /310
+JGE 1,0,15,1     ; Check if value is greater than 0 /311
+NOT 1         ; /312
+AIR 1,1      ; Convert to positive /313 
+STR 1,0,9   ; Store the value in (New difference variable) /314
+LDR 1,0,0    ; Load list index //Beginning of loop /315
+AIR 1,1      ; /316
+STR 1,0,0    ; Update List index value /317 
+LDR 1,0,0,1  ; Load current value /318
+SMR 1,0,6   ; Check difference /319
+JGE 1,0,16,1      ; If less than 0, convert to positive /320
+NOT 1            ; /321
+AIR 1,1      ; /322
+STR 1,0,10   ; Store the current difference /323
+SMR 1,0,9   ;  /324
+JGE 1,0,19,1      ; /325 If negative, Update the difference variable and output values
+LDR 1,0,10   ; /326
+STR 1,0,9   ; Update the difference variable /327
+LDR 1,0,0,1  ; /328
+STR 1,0,8    ; Store as the new output value /329 
+LDR 0,0,0    ; /330
+SMR 0,0,7    ; /331
+SETCCE 0     ;
+JNE 0,17,1 ; /333
+HLT          ; /334
+
+LOC 350       ;
+LDR 0,0,8     ; Load final output value /92
+LDR 2,0,4    ; Load in the 10 value /93
+DVD 0,2      ; Divide the output by 10 /94
+AIR 1,31     ; /95
+AIR 1,17     ; Convert back to string /96
+OUT 1,0      ; /97
+STR 0,0,8    ; Store quotient /98 
+SETCCE 0     ; /99
+JNE 0,0,(JUMP LOC)   ; If the value hasn't been completely divided /103
+LDR 1,0,4   ; /104
+OUT 1,0      ; /105
+HLT    ; /106
+
+
